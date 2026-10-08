@@ -1,0 +1,445 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/ploid/main/json-schema/ploid-sync-search-response-schema.json",
+  "title": "SyncSearchResponse",
+  "x-generated": "2026-10-07",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/ploid-openapi.yml#/components/schemas/SyncSearchResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data",
+    "meta"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "results",
+        "grounding",
+        "search_time_ms",
+        "rows_indexed",
+        "request"
+      ],
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SyncSearchResult"
+          }
+        },
+        "grounding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "results",
+            "source_counts",
+            "provider_outcomes",
+            "search_time_ms"
+          ],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "not_needed",
+                "complete",
+                "partial",
+                "unavailable"
+              ]
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/SyncSearchGroundingResult"
+              }
+            },
+            "source_counts": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "provider_outcomes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "failed",
+                  "unconfigured"
+                ]
+              }
+            },
+            "search_time_ms": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "search_time_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Index search duration."
+        },
+        "total_time_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total search processing time, including planning, retrieval and verification."
+        },
+        "rows_indexed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verification": {
+          "type": "object",
+          "required": [
+            "status",
+            "candidates_checked",
+            "search_time_ms"
+          ],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "partial"
+              ]
+            },
+            "candidates_checked": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "search_time_ms": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "query",
+            "type",
+            "category",
+            "num_results"
+          ],
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "instant",
+                "fast",
+                "auto",
+                "deep"
+              ]
+            },
+            "category": {
+              "type": "string",
+              "const": "people"
+            },
+            "num_results": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 150
+            },
+            "criteria": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "meta": {
+      "$ref": "#/$defs/PublicCreditsResponseMeta"
+    }
+  },
+  "$defs": {
+    "PublicCreditsResponseMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "credits_charged"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string"
+        },
+        "credits_charged": {
+          "type": "number",
+          "minimum": 0
+        },
+        "remaining_credits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "SyncSearchGroundingResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "title",
+        "snippet",
+        "source",
+        "observed_at",
+        "person"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "person": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "title",
+            "company",
+            "location",
+            "linkedin_url",
+            "identity_verified",
+            "resolution_source"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "title": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "company": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "location": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "linkedin_url": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "identity_verified": {
+              "type": "boolean",
+              "const": false
+            },
+            "resolution_source": {
+              "type": "string",
+              "const": "public_web"
+            }
+          }
+        }
+      }
+    },
+    "SyncSearchPerson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "person_id",
+        "confidence",
+        "contact_status",
+        "identity_verified",
+        "resolution_source"
+      ],
+      "properties": {
+        "person_id": {
+          "type": "string",
+          "description": "Stable Ploid identity. Deep person enrichment currently requires a linked LinkedIn profile."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "company": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "location": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "linkedin_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_url": {
+          "type": "string",
+          "description": "Canonical public profile or individual biography when discovered outside LinkedIn."
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Retrieval confidence normalized to 0..1; null when the source has no confidence score."
+        },
+        "contact_status": {
+          "type": "string",
+          "enum": [
+            "requires_enrichment",
+            "unavailable"
+          ],
+          "description": "LinkedIn contact fields can be resolved through POST /v1/enrich. Results without LinkedIn report unavailable."
+        },
+        "identity_verified": {
+          "type": "boolean",
+          "const": false
+        },
+        "resolution_source": {
+          "type": "string",
+          "enum": [
+            "ploid_people_index",
+            "public_web"
+          ]
+        }
+      },
+      "description": "Only resolved people are returned. Requested profile fields are present when selected and may be null when the people index has no value."
+    },
+    "SyncSearchResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "title",
+        "score",
+        "person"
+      ],
+      "properties": {
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "person": {
+          "$ref": "#/$defs/SyncSearchPerson"
+        },
+        "verification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "criterionId",
+              "criterion",
+              "status",
+              "reasoning",
+              "references"
+            ],
+            "properties": {
+              "criterionId": {
+                "type": "string"
+              },
+              "criterion": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "const": "satisfied"
+              },
+              "reasoning": {
+                "type": "string"
+              },
+              "references": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "source",
+                    "quote"
+                  ],
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "quote": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

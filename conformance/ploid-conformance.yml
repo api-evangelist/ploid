@@ -1,0 +1,96 @@
+generated: '2026-10-07'
+method: searched
+source:
+- openapi/ (1 document(s), 16 mutating operations)
+- https://api.ploid.com/.well-known/oauth-authorization-server
+- https://api.ploid.com/.well-known/oauth-protected-resource
+- https://auth.ploid.com/.well-known/openid-configuration
+- https://ploid.com/.well-known/mcp/server-card.json
+- https://ploid.com/documentation/mcp
+- https://ploid.com/privacy
+- https://ploid.com/data-rights
+derived_rows_generator: derive-conformance.py (first six rows, kept verbatim)
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: the document declares 3.1.0
+- id: oauth2
+  conforms: false
+  evidence: 'securitySchemes: apiKeyAuth (apiKey), bearerAuth (http)'
+- id: rfc9457
+  conforms: false
+  evidence: no response declares application/problem+json
+- id: idempotency
+  conforms: true
+  evidence: Idempotency-Key declared on 6 of 16 mutating operations (partial)
+- id: pagination
+  conforms: true
+  evidence: list operations take cursor, limit, page
+- id: ratelimit-headers
+  conforms: true
+  evidence: responses declare Retry-After
+- id: rfc9728
+  conforms: true
+  evidence: https://api.ploid.com/.well-known/oauth-protected-resource (200) declares resource https://api.ploid.com/mcp,
+    authorization_servers [https://api.ploid.com], scopes_supported and bearer_methods_supported (OAuth 2.0 Protected
+    Resource Metadata) for the MCP server; the REST API itself uses API keys.
+  scope: MCP server
+  method: searched
+- id: rfc8414
+  conforms: true
+  evidence: https://api.ploid.com/.well-known/oauth-authorization-server (200) publishes issuer, authorization/token/registration/revocation
+    endpoints, grant_types_supported and code_challenge_methods_supported (OAuth 2.0 Authorization Server Metadata).
+  scope: MCP server
+  method: searched
+- id: rfc7591
+  conforms: true
+  evidence: 'registration_endpoint https://api.ploid.com/oauth/register in the authorization-server metadata; docs:
+    "Ploid supports OAuth discovery, dynamic client registration, authorization code with S256 PKCE, one-hour access
+    tokens, rotating refresh tokens, and revocation."'
+  scope: MCP server
+  method: searched
+- id: pkce
+  conforms: true
+  evidence: code_challenge_methods_supported ["S256"] on both api.ploid.com and auth.ploid.com metadata.
+  scope: MCP server and device login
+  method: searched
+- id: rfc7009
+  conforms: true
+  evidence: revocation_endpoint https://api.ploid.com/oauth/revoke in the authorization-server metadata.
+  scope: MCP server
+  method: searched
+- id: rfc8628
+  conforms: true
+  evidence: 'device_authorization_endpoint https://auth.ploid.com/oauth2/device_authorization and grant type urn:ietf:params:oauth:grant-type:device_code;
+    docs: "The CLI and MCP package support a device authorization flow."'
+  scope: CLI and local MCP login
+  method: searched
+- id: oidc
+  conforms: true
+  evidence: 'https://auth.ploid.com/.well-known/openid-configuration (200): issuer https://auth.ploid.com, jwks_uri,
+    userinfo_endpoint, scopes openid/profile/email/offline_access. This issuer fronts workspace login, not the REST
+    API.'
+  scope: workspace login
+  method: searched
+- id: mcp-streamable-http
+  conforms: true
+  evidence: 'docs: "Ploid''s hosted MCP server uses Streamable HTTP and OAuth 2.1" at https://api.ploid.com/mcp;
+    the provider-published server card at https://ploid.com/.well-known/mcp/server-card.json lists remotes [{type:
+    streamable-http, url: https://api.ploid.com/mcp}]; preflight POST returned 401 (gated), control path 404.'
+  scope: MCP server
+  method: searched
+- id: gdpr
+  conforms: true
+  evidence: 'Privacy policy: "only where permitted by applicable law, including the GDPR (where it applies) and
+    California privacy law (CCPA/CPRA)"; data-rights page cites GDPR Art. 14 and Art. 77 and names Standard Contractual
+    Clauses for transfers.'
+  claim: true
+  method: searched
+- id: ccpa
+  conforms: true
+  evidence: Privacy policy names "California privacy law (CCPA/CPRA)" and the data-rights page routes opt-out or
+    "do not sell" requests.
+  claim: true
+  method: searched
+note: Rows openapi-3.1 through ratelimit-headers are derived from the provider's own OpenAPI by derive-conformance.py;
+  rows rfc9728 onward were searched on the provider's well-known documents, docs and legal pages on 2026-10-07.

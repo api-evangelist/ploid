@@ -1,0 +1,105 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/api/errors-and-limits
+sources:
+  - https://ploid.com/documentation/api/errors-and-limits
+  - https://ploid.com/documentation/api/search
+  - https://ploid.com/documentation/api/person
+  - https://ploid.com/documentation/api/enrichment
+  - https://ploid.com/documentation/api/social
+  - https://ploid.com/documentation/api/sets
+  - openapi/ploid-openapi.yml
+format: custom-json-envelope
+envelope:
+  shape: '{"error": {"code": "<stable_code>", "message": "<text>", "request_id": "req_..."}}'
+  schema: PublicApiError (openapi/ploid-openapi.yml); optional error.http_status, error.retryable, error.retry_after_seconds, error.unavailable_fields, error.usage
+  request_id: error.request_id (also meta.request_id on success); "Always log request_id and include it when contacting support."
+  rfc9457: false
+note: >-
+  Statuses are recorded only where the docs or the OpenAPI responses state them; the common-codes table
+  on the errors page lists codes without statuses, so those rows carry the status the authentication
+  and credit prose attaches to them where it does, and null otherwise.
+problems:
+  - status: 401
+    title: missing_api_key
+    description: No supported credential header was present
+  - status: 401
+    title: invalid_api_key
+    description: The credential is not recognized
+  - status: 401
+    title: expired_api_key
+    description: The credential has expired
+  - status: 401
+    title: revoked_api_key
+    description: The credential has been revoked
+  - status: 403
+    title: insufficient_scope
+    description: The key lacks the endpoint's required scope ("An endpoint called without its required permission returns 403 with insufficient_scope")
+    remediation: Create or use a key with the required scope; the request does not consume its Idempotency-Key.
+  - status: 402
+    title: active_account_required
+    description: The workspace cannot currently use the API
+  - status: 402
+    title: insufficient_acu
+    description: The workspace has insufficient usage capacity ("Not enough ACU. Add usage capacity to continue.")
+    remediation: Add usage capacity; credit/account 402 responses whose preflight may auto-recharge the workspace consume the Idempotency-Key and replay exactly.
+  - status: 402
+    title: daily_budget_exceeded
+    description: The active key reached its daily budget
+    remediation: Budget denials release the Idempotency-Key so a retry can recheck a reset budget window.
+  - status: 402
+    title: monthly_budget_exceeded
+    description: The active key reached its monthly budget
+  - status: 429
+    title: rate_limited
+    description: An organization or key rate bucket was exceeded; includes Retry-After and error.retry_after_seconds
+    remediation: Respect Retry-After, add jitter, bound retries, reduce concurrency.
+  - status: 422
+    title: query_required
+    description: A search query was missing
+  - status: 422
+    title: identity_required
+    description: The endpoint needs a stronger identity anchor
+  - status: 422
+    title: validation_failed
+    description: Request validation failed (enrichment page)
+  - status: 409
+    title: idempotency_conflict
+    description: The Idempotency-Key was reused for a different request (different credentials, scopes, route, query, body, content type, or response type)
+  - status: 422
+    title: unsupported_category
+    description: Search category is not people
+  - status: 422
+    title: unsupported_filters
+    description: Filter is not in the serving index (company_size, company_domain, radius_km, tenure); never silently ignored
+  - status: 503
+    title: search_unavailable
+    description: Fast search is not configured
+  - status: 503
+    title: search_timeout
+    description: Search timed out without results; the endpoint fails closed and does not return partial index results
+  - status: 503
+    title: search_failed
+    description: Search failed without results
+  - status: 410
+    title: run_expired
+    description: Person run inputs and results are retrievable for seven days, then polling returns 410 run_expired
+  - status: 503
+    title: upstream_unavailable
+    description: Every requested enrichment field failed; error.retryable true, error.unavailable_fields listed, Retry-After 1; no fields billed
+    remediation: Retry with the same Idempotency-Key after Retry-After.
+  - status: 503
+    title: upstream_timeout
+    description: Provider lookups exceeded the 80-second deadline; retryable true; the attempt is not charged
+  - status: 422
+    title: platform_mismatch
+    description: Social profile URL belongs to a different platform
+  - status: 404
+    title: profile_not_found
+    description: No matching social profile was found; not charged
+  - status: 503
+    title: enrichment_unavailable
+    description: Social enrichment is temporarily unavailable
+  - status: 422
+    title: enrichments_unavailable
+    description: People Sets (preview) request from an API key with a non-empty enrichments array

@@ -1,0 +1,727 @@
+{
+  "@context": {
+    "@vocab": "https://ploid.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "ploid": "https://ploid.com/schema#",
+    "HarnessChatCompletionRequest": "ploid:HarnessChatCompletionRequest",
+    "model": {
+      "@id": "ploid:model",
+      "@type": "xsd:string"
+    },
+    "messages": {
+      "@id": "ploid:messages",
+      "@container": "@list"
+    },
+    "tools": {
+      "@id": "ploid:tools",
+      "@container": "@list"
+    },
+    "tool_choice": {
+      "@id": "ploid:tool_choice"
+    },
+    "parallel_tool_calls": {
+      "@id": "ploid:parallel_tool_calls",
+      "@type": "xsd:boolean"
+    },
+    "response_format": {
+      "@id": "ploid:response_format"
+    },
+    "stream": {
+      "@id": "ploid:stream",
+      "@type": "xsd:boolean"
+    },
+    "stream_options": {
+      "@id": "ploid:stream_options"
+    },
+    "temperature": {
+      "@id": "ploid:temperature",
+      "@type": "xsd:decimal"
+    },
+    "top_p": {
+      "@id": "ploid:top_p",
+      "@type": "xsd:decimal"
+    },
+    "stop": {
+      "@id": "ploid:stop"
+    },
+    "seed": {
+      "@id": "ploid:seed",
+      "@type": "xsd:integer"
+    },
+    "max_tokens": {
+      "@id": "ploid:max_tokens",
+      "@type": "xsd:integer"
+    },
+    "max_completion_tokens": {
+      "@id": "ploid:max_completion_tokens",
+      "@type": "xsd:integer"
+    },
+    "PublicApiError": "ploid:PublicApiError",
+    "error": {
+      "@id": "ploid:error"
+    },
+    "PublicResponseMeta": "ploid:PublicResponseMeta",
+    "request_id": {
+      "@id": "ploid:request_id",
+      "@type": "xsd:string"
+    },
+    "PublicCreditsResponseMeta": "ploid:PublicCreditsResponseMeta",
+    "credits_charged": {
+      "@id": "ploid:credits_charged",
+      "@type": "xsd:decimal"
+    },
+    "remaining_credits": {
+      "@id": "ploid:remaining_credits",
+      "@type": "xsd:decimal"
+    },
+    "cursor": {
+      "@id": "ploid:cursor",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "ploid:message",
+      "@type": "xsd:string"
+    },
+    "PersonFieldProvenance": "ploid:PersonFieldProvenance",
+    "source": {
+      "@id": "ploid:source",
+      "@type": "xsd:string"
+    },
+    "source_url": {
+      "@id": "ploid:source_url",
+      "@type": "@id"
+    },
+    "first_seen": {
+      "@id": "ploid:first_seen"
+    },
+    "last_seen": {
+      "@id": "ploid:last_seen",
+      "@type": "xsd:dateTime"
+    },
+    "confidence": {
+      "@id": "ploid:confidence",
+      "@type": "xsd:decimal"
+    },
+    "PersonRecord": "ploid:PersonRecord",
+    "person_id": {
+      "@id": "ploid:person_id",
+      "@type": "xsd:string"
+    },
+    "summary": {
+      "@id": "ploid:summary",
+      "@type": "xsd:string"
+    },
+    "age_range": {
+      "@id": "ploid:age_range"
+    },
+    "identity": {
+      "@id": "ploid:identity"
+    },
+    "source_links": {
+      "@id": "ploid:source_links",
+      "@container": "@list"
+    },
+    "professional": {
+      "@id": "ploid:professional"
+    },
+    "presence": {
+      "@id": "ploid:presence"
+    },
+    "signals": {
+      "@id": "ploid:signals"
+    },
+    "provenance": {
+      "@id": "ploid:provenance"
+    },
+    "PersonRequest": "ploid:PersonRequest",
+    "identifier": {
+      "@id": "ploid:identifier"
+    },
+    "PersonRunResponse": "ploid:PersonRunResponse",
+    "data": {
+      "@id": "ploid:data"
+    },
+    "meta": {
+      "@id": "ploid:meta"
+    },
+    "SyncSearchPerson": "ploid:SyncSearchPerson",
+    "name": {
+      "@id": "ploid:name",
+      "@type": "xsd:string"
+    },
+    "title": {
+      "@id": "ploid:title",
+      "@type": "xsd:string"
+    },
+    "company": {
+      "@id": "ploid:company",
+      "@type": "xsd:string"
+    },
+    "location": {
+      "@id": "ploid:location",
+      "@type": "xsd:string"
+    },
+    "linkedin_url": {
+      "@id": "ploid:linkedin_url",
+      "@type": "xsd:string"
+    },
+    "profile_url": {
+      "@id": "ploid:profile_url",
+      "@type": "xsd:string"
+    },
+    "contact_status": {
+      "@id": "ploid:contact_status",
+      "@type": "xsd:string"
+    },
+    "identity_verified": {
+      "@id": "ploid:identity_verified",
+      "@type": "xsd:boolean"
+    },
+    "resolution_source": {
+      "@id": "ploid:resolution_source",
+      "@type": "xsd:string"
+    },
+    "SyncSearchResult": "ploid:SyncSearchResult",
+    "url": {
+      "@id": "ploid:url",
+      "@type": "xsd:string"
+    },
+    "score": {
+      "@id": "ploid:score",
+      "@type": "xsd:decimal"
+    },
+    "person": {
+      "@id": "ploid:person",
+      "@type": "@id"
+    },
+    "verification": {
+      "@id": "ploid:verification",
+      "@container": "@list"
+    },
+    "SyncSearchGroundingResult": "ploid:SyncSearchGroundingResult",
+    "snippet": {
+      "@id": "ploid:snippet",
+      "@type": "xsd:string"
+    },
+    "observed_at": {
+      "@id": "ploid:observed_at",
+      "@type": "xsd:dateTime"
+    },
+    "SyncSearchResponse": "ploid:SyncSearchResponse",
+    "SearchHandoffResponse": "ploid:SearchHandoffResponse",
+    "ResolveRequest": "ploid:ResolveRequest",
+    "role": {
+      "@id": "ploid:role",
+      "@type": "xsd:string"
+    },
+    "address": {
+      "@id": "ploid:address",
+      "@type": "xsd:string"
+    },
+    "work_email": {
+      "@id": "ploid:work_email",
+      "@type": "xsd:string"
+    },
+    "personal_email": {
+      "@id": "ploid:personal_email",
+      "@type": "xsd:string"
+    },
+    "phone": {
+      "@id": "ploid:phone",
+      "@type": "xsd:string"
+    },
+    "ResolveResponse": "ploid:ResolveResponse",
+    "SocialsResponse": "ploid:SocialsResponse",
+    "EnrichContact": "ploid:EnrichContact",
+    "value": {
+      "@id": "ploid:value",
+      "@type": "xsd:string"
+    },
+    "verification_status": {
+      "@id": "ploid:verification_status",
+      "@type": "xsd:string"
+    },
+    "EnrichFieldResult": "ploid:EnrichFieldResult",
+    "status": {
+      "@id": "ploid:status",
+      "@type": "xsd:string"
+    },
+    "EnrichLinkedInProfile": "ploid:EnrichLinkedInProfile",
+    "headline": {
+      "@id": "ploid:headline",
+      "@type": "xsd:string"
+    },
+    "photo_url": {
+      "@id": "ploid:photo_url",
+      "@type": "xsd:string"
+    },
+    "skills": {
+      "@id": "ploid:skills",
+      "@container": "@list"
+    },
+    "companies": {
+      "@id": "ploid:companies",
+      "@container": "@list"
+    },
+    "schools": {
+      "@id": "ploid:schools",
+      "@container": "@list"
+    },
+    "total_years_experience": {
+      "@id": "ploid:total_years_experience",
+      "@type": "xsd:decimal"
+    },
+    "open_to_work": {
+      "@id": "ploid:open_to_work",
+      "@type": "xsd:boolean"
+    },
+    "follower_count": {
+      "@id": "ploid:follower_count",
+      "@type": "xsd:decimal"
+    },
+    "EnrichLegacyResponse": "ploid:EnrichLegacyResponse",
+    "EnrichContactResponse": "ploid:EnrichContactResponse",
+    "LinkedInProfilePosition": "ploid:LinkedInProfilePosition",
+    "companyName": {
+      "@id": "ploid:companyName",
+      "@type": "xsd:string"
+    },
+    "companyUrl": {
+      "@id": "ploid:companyUrl",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "ploid:description",
+      "@type": "xsd:string"
+    },
+    "startsAt": {
+      "@id": "ploid:startsAt",
+      "@type": "xsd:string"
+    },
+    "endsAt": {
+      "@id": "ploid:endsAt",
+      "@type": "xsd:string"
+    },
+    "current": {
+      "@id": "ploid:current",
+      "@type": "xsd:boolean"
+    },
+    "LinkedInProfileEducation": "ploid:LinkedInProfileEducation",
+    "school": {
+      "@id": "ploid:school",
+      "@type": "xsd:string"
+    },
+    "degree": {
+      "@id": "ploid:degree",
+      "@type": "xsd:string"
+    },
+    "field": {
+      "@id": "ploid:field",
+      "@type": "xsd:string"
+    },
+    "LinkedInProfile": "ploid:LinkedInProfile",
+    "socialId": {
+      "@id": "ploid:socialId",
+      "@type": "xsd:string"
+    },
+    "publicIdentifier": {
+      "@id": "ploid:publicIdentifier",
+      "@type": "xsd:string"
+    },
+    "profileUrl": {
+      "@id": "ploid:profileUrl",
+      "@type": "xsd:string"
+    },
+    "firstName": {
+      "@id": "ploid:firstName",
+      "@type": "xsd:string"
+    },
+    "lastName": {
+      "@id": "ploid:lastName",
+      "@type": "xsd:string"
+    },
+    "fullName": {
+      "@id": "ploid:fullName",
+      "@type": "xsd:string"
+    },
+    "countryCode": {
+      "@id": "ploid:countryCode",
+      "@type": "xsd:string"
+    },
+    "industry": {
+      "@id": "ploid:industry",
+      "@type": "xsd:string"
+    },
+    "connectionDegree": {
+      "@id": "ploid:connectionDegree"
+    },
+    "followerCount": {
+      "@id": "ploid:followerCount",
+      "@type": "xsd:decimal"
+    },
+    "connectionCount": {
+      "@id": "ploid:connectionCount",
+      "@type": "xsd:decimal"
+    },
+    "profilePictureUrl": {
+      "@id": "ploid:profilePictureUrl",
+      "@type": "xsd:string"
+    },
+    "coverPictureUrl": {
+      "@id": "ploid:coverPictureUrl",
+      "@type": "xsd:string"
+    },
+    "currentPosition": {
+      "@id": "ploid:currentPosition"
+    },
+    "positions": {
+      "@id": "ploid:positions",
+      "@container": "@list"
+    },
+    "education": {
+      "@id": "ploid:education",
+      "@container": "@list"
+    },
+    "isOpenToWork": {
+      "@id": "ploid:isOpenToWork",
+      "@type": "xsd:boolean"
+    },
+    "isPremium": {
+      "@id": "ploid:isPremium",
+      "@type": "xsd:boolean"
+    },
+    "LinkedInProfileResponse": "ploid:LinkedInProfileResponse",
+    "LinkedInSearchItem": "ploid:LinkedInSearchItem",
+    "LinkedInSearchResponse": "ploid:LinkedInSearchResponse",
+    "LinkedInPostAuthor": "ploid:LinkedInPostAuthor",
+    "LinkedInPost": "ploid:LinkedInPost",
+    "postUrl": {
+      "@id": "ploid:postUrl",
+      "@type": "xsd:string"
+    },
+    "text": {
+      "@id": "ploid:text",
+      "@type": "xsd:string"
+    },
+    "publishedAt": {
+      "@id": "ploid:publishedAt",
+      "@type": "xsd:string"
+    },
+    "reactionCount": {
+      "@id": "ploid:reactionCount",
+      "@type": "xsd:decimal"
+    },
+    "commentCount": {
+      "@id": "ploid:commentCount",
+      "@type": "xsd:decimal"
+    },
+    "shareCount": {
+      "@id": "ploid:shareCount",
+      "@type": "xsd:decimal"
+    },
+    "kind": {
+      "@id": "ploid:kind",
+      "@type": "xsd:string"
+    },
+    "author": {
+      "@id": "ploid:author",
+      "@type": "@id"
+    },
+    "mediaUrl": {
+      "@id": "ploid:mediaUrl",
+      "@type": "xsd:string"
+    },
+    "LinkedInPostsResponse": "ploid:LinkedInPostsResponse",
+    "LinkedInReadResponse": "ploid:LinkedInReadResponse",
+    "AccountAcuSummary": "ploid:AccountAcuSummary",
+    "included": {
+      "@id": "ploid:included",
+      "@type": "xsd:decimal"
+    },
+    "purchased": {
+      "@id": "ploid:purchased",
+      "@type": "xsd:decimal"
+    },
+    "used": {
+      "@id": "ploid:used",
+      "@type": "xsd:decimal"
+    },
+    "available": {
+      "@id": "ploid:available",
+      "@type": "xsd:decimal"
+    },
+    "overage": {
+      "@id": "ploid:overage",
+      "@type": "xsd:decimal"
+    },
+    "AccountCreditSummary": "ploid:AccountCreditSummary",
+    "plan": {
+      "@id": "ploid:plan",
+      "@type": "xsd:string"
+    },
+    "acu": {
+      "@id": "ploid:acu",
+      "@type": "@id"
+    },
+    "acu_value_usd": {
+      "@id": "ploid:acu_value_usd",
+      "@type": "xsd:decimal"
+    },
+    "ApiKeyBudgetState": "ploid:ApiKeyBudgetState",
+    "daily_budget_cents": {
+      "@id": "ploid:daily_budget_cents",
+      "@type": "xsd:integer"
+    },
+    "monthly_budget_cents": {
+      "@id": "ploid:monthly_budget_cents",
+      "@type": "xsd:integer"
+    },
+    "daily_used_cents": {
+      "@id": "ploid:daily_used_cents",
+      "@type": "xsd:integer"
+    },
+    "monthly_used_cents": {
+      "@id": "ploid:monthly_used_cents",
+      "@type": "xsd:integer"
+    },
+    "daily_remaining_cents": {
+      "@id": "ploid:daily_remaining_cents",
+      "@type": "xsd:integer"
+    },
+    "monthly_remaining_cents": {
+      "@id": "ploid:monthly_remaining_cents",
+      "@type": "xsd:integer"
+    },
+    "daily_reset_at": {
+      "@id": "ploid:daily_reset_at",
+      "@type": "xsd:dateTime"
+    },
+    "monthly_reset_at": {
+      "@id": "ploid:monthly_reset_at",
+      "@type": "xsd:dateTime"
+    },
+    "AccountCreditsResponse": "ploid:AccountCreditsResponse",
+    "AccountUsageResponse": "ploid:AccountUsageResponse",
+    "AccountKeyRevocationResponse": "ploid:AccountKeyRevocationResponse",
+    "AccountProfile": "ploid:AccountProfile",
+    "email": {
+      "@id": "ploid:email",
+      "@type": "xsd:string"
+    },
+    "first_name": {
+      "@id": "ploid:first_name",
+      "@type": "xsd:string"
+    },
+    "last_name": {
+      "@id": "ploid:last_name",
+      "@type": "xsd:string"
+    },
+    "image_url": {
+      "@id": "ploid:image_url",
+      "@type": "xsd:string"
+    },
+    "twitter_url": {
+      "@id": "ploid:twitter_url",
+      "@type": "@id"
+    },
+    "github_url": {
+      "@id": "ploid:github_url",
+      "@type": "@id"
+    },
+    "AccountProfileUpdate": "ploid:AccountProfileUpdate",
+    "AccountProfileResponse": "ploid:AccountProfileResponse",
+    "EnrichLegacyRequest": "ploid:EnrichLegacyRequest",
+    "enrichments": {
+      "@id": "ploid:enrichments",
+      "@container": "@list"
+    },
+    "EnrichContactRequest": "ploid:EnrichContactRequest",
+    "company_domain": {
+      "@id": "ploid:company_domain",
+      "@type": "xsd:string"
+    },
+    "fields": {
+      "@id": "ploid:fields",
+      "@container": "@list"
+    },
+    "SyncSearchRequest": "ploid:SyncSearchRequest",
+    "query": {
+      "@id": "ploid:query",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "ploid:type",
+      "@type": "xsd:string"
+    },
+    "category": {
+      "@id": "ploid:category",
+      "@type": "xsd:string"
+    },
+    "num_results": {
+      "@id": "ploid:num_results",
+      "@type": "xsd:integer"
+    },
+    "criteria": {
+      "@id": "ploid:criteria",
+      "@container": "@list"
+    },
+    "async": {
+      "@id": "ploid:async",
+      "@type": "xsd:boolean"
+    },
+    "webhook_url": {
+      "@id": "ploid:webhook_url",
+      "@type": "@id"
+    },
+    "filters": {
+      "@id": "ploid:filters"
+    },
+    "contents": {
+      "@id": "ploid:contents"
+    },
+    "SocialsRequest": "ploid:SocialsRequest",
+    "platform": {
+      "@id": "ploid:platform",
+      "@type": "xsd:string"
+    },
+    "LinkedInSearchFilters": "ploid:LinkedInSearchFilters",
+    "keywords": {
+      "@id": "ploid:keywords",
+      "@type": "xsd:string"
+    },
+    "currentCompany": {
+      "@id": "ploid:currentCompany",
+      "@type": "@id"
+    },
+    "LinkedInSearchRequest": "ploid:LinkedInSearchRequest",
+    "limit": {
+      "@id": "ploid:limit",
+      "@type": "xsd:integer"
+    },
+    "MonitorTarget": "ploid:MonitorTarget",
+    "events": {
+      "@id": "ploid:events",
+      "@container": "@list"
+    },
+    "MonitorPlan": "ploid:MonitorPlan",
+    "targets": {
+      "@id": "ploid:targets",
+      "@container": "@list"
+    },
+    "relevance_criteria": {
+      "@id": "ploid:relevance_criteria",
+      "@type": "xsd:string"
+    },
+    "MonitorOutput": "ploid:MonitorOutput",
+    "MonitorCompileRequest": "ploid:MonitorCompileRequest",
+    "output": {
+      "@id": "ploid:output",
+      "@type": "@id"
+    },
+    "MonitorCreateRequest": "ploid:MonitorCreateRequest",
+    "schedule": {
+      "@id": "ploid:schedule",
+      "@type": "@id"
+    },
+    "max_items_per_run": {
+      "@id": "ploid:max_items_per_run",
+      "@type": "xsd:integer"
+    },
+    "MonitorUpdateRequest": "ploid:MonitorUpdateRequest",
+    "MonitorCompilation": "ploid:MonitorCompilation",
+    "object": {
+      "@id": "ploid:object",
+      "@type": "xsd:string"
+    },
+    "unresolved": {
+      "@id": "ploid:unresolved",
+      "@container": "@list"
+    },
+    "Monitor": "ploid:Monitor",
+    "id": {
+      "@id": "ploid:id",
+      "@type": "xsd:string"
+    },
+    "baseline_at": {
+      "@id": "ploid:baseline_at",
+      "@type": "xsd:dateTime"
+    },
+    "last_run_at": {
+      "@id": "ploid:last_run_at",
+      "@type": "xsd:dateTime"
+    },
+    "next_run_at": {
+      "@id": "ploid:next_run_at",
+      "@type": "xsd:dateTime"
+    },
+    "created_at": {
+      "@id": "ploid:created_at",
+      "@type": "xsd:dateTime"
+    },
+    "updated_at": {
+      "@id": "ploid:updated_at",
+      "@type": "xsd:dateTime"
+    },
+    "MonitorRun": "ploid:MonitorRun",
+    "monitor_id": {
+      "@id": "ploid:monitor_id",
+      "@type": "xsd:string"
+    },
+    "trigger": {
+      "@id": "ploid:trigger",
+      "@type": "xsd:string"
+    },
+    "candidates": {
+      "@id": "ploid:candidates",
+      "@type": "xsd:integer"
+    },
+    "items_emitted": {
+      "@id": "ploid:items_emitted",
+      "@type": "xsd:integer"
+    },
+    "acu_charged": {
+      "@id": "ploid:acu_charged",
+      "@type": "xsd:decimal"
+    },
+    "started_at": {
+      "@id": "ploid:started_at",
+      "@type": "xsd:dateTime"
+    },
+    "completed_at": {
+      "@id": "ploid:completed_at",
+      "@type": "xsd:dateTime"
+    },
+    "MonitorItem": "ploid:MonitorItem",
+    "run_id": {
+      "@id": "ploid:run_id",
+      "@type": "xsd:string"
+    },
+    "event": {
+      "@id": "ploid:event",
+      "@type": "xsd:string"
+    },
+    "target": {
+      "@id": "ploid:target"
+    },
+    "occurred_at": {
+      "@id": "ploid:occurred_at",
+      "@type": "xsd:dateTime"
+    },
+    "relevance": {
+      "@id": "ploid:relevance"
+    },
+    "output_error": {
+      "@id": "ploid:output_error",
+      "@type": "xsd:string"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Ploid API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Ploid's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-07) from openapi/ploid-openapi.yml.",
+  "dcterms:created": "2026-10-07",
+  "dcterms:source": [
+    "openapi/ploid-openapi.yml"
+  ]
+}

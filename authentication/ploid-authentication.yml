@@ -1,0 +1,85 @@
+generated: '2026-10-07'
+method: searched
+source: openapi/ploid-openapi.yml
+docs: https://ploid.com/documentation/getting-started/authentication
+sources:
+  - openapi/ploid-openapi.yml
+  - https://ploid.com/documentation/getting-started/authentication
+  - https://ploid.com/documentation/mcp
+  - https://api.ploid.com/.well-known/oauth-authorization-server
+  - https://api.ploid.com/.well-known/oauth-protected-resource
+  - https://auth.ploid.com/.well-known/openid-configuration
+summary:
+  types:
+    - apiKey
+    - http
+    - oauth2
+  api_key_in:
+    - header
+  note: >-
+    API requests authenticate with a Ploid API key sent either as Authorization: Bearer $PLOID_API_KEY or
+    as x-api-key: $PLOID_API_KEY; the organization and user identity are derived from the credential. Keys
+    are scoped (see scopes/), shown once (hashed storage), and can be revoked with DELETE /v1/account/key.
+    The hosted MCP server uses OAuth 2.1 (discovery, dynamic client registration, authorization code with
+    S256 PKCE, one-hour access tokens, rotating refresh tokens, revocation). The CLI and local MCP package
+    obtain a scoped key through a device authorization flow against auth.ploid.com.
+schemes:
+  - name: bearerAuth
+    type: http
+    scheme: bearer
+    header: Authorization
+    format: 'Bearer $PLOID_API_KEY'
+    sources:
+      - openapi/ploid-openapi.yml
+      - https://ploid.com/documentation/getting-started/authentication
+  - name: apiKeyAuth
+    type: apiKey
+    in: header
+    parameter: x-api-key
+    sources:
+      - openapi/ploid-openapi.yml
+      - https://ploid.com/documentation/getting-started/authentication
+  - name: mcpOAuth
+    type: oauth2
+    flows:
+      authorizationCode:
+        authorizationUrl: https://ploid.com/auth/mcp
+        tokenUrl: https://api.ploid.com/oauth/token
+        refreshUrl: https://api.ploid.com/oauth/token
+        scopes:
+          agent:chat: Use the harness context and chat completions
+          people:enrich: Enrich supported profile and contact fields
+          people:search: Search the public people index
+          account:read: Read usage and credits or revoke the caller key
+    pkce: S256
+    dynamic_client_registration: https://api.ploid.com/oauth/register
+    revocation: https://api.ploid.com/oauth/revoke
+    applies_to: https://api.ploid.com/mcp
+    sources:
+      - https://api.ploid.com/.well-known/oauth-authorization-server
+      - https://api.ploid.com/.well-known/oauth-protected-resource
+      - https://ploid.com/documentation/mcp
+  - name: deviceAuthorization
+    type: oauth2
+    flows:
+      deviceCode:
+        deviceAuthorizationUrl: https://auth.ploid.com/oauth2/device_authorization
+        tokenUrl: https://auth.ploid.com/oauth2/token
+    applies_to: 'ploid login and npx @ploid/mcp login (stores a narrowly scoped API key locally)'
+    issuer: https://auth.ploid.com
+    sources:
+      - https://auth.ploid.com/.well-known/openid-configuration
+      - https://ploid.com/documentation/getting-started/authentication
+key_hygiene:
+  - Create a separate key for each environment or integration.
+  - Give it only the scopes the integration needs.
+  - Configure daily or monthly budgets where available.
+  - Never expose an API key in browser JavaScript. Send requests through your own server.
+  - Secrets are shown once; a lost secret must be revoked and replaced.
+errors:
+  - code: missing_api_key
+  - code: invalid_api_key
+  - code: expired_api_key
+  - code: revoked_api_key
+  - code: insufficient_scope
+    status: 403

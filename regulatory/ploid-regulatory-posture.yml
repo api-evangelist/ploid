@@ -1,0 +1,57 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/data-rights
+sources:
+- https://ploid.com/data-rights
+- https://ploid.com/privacy
+- https://ploid.com/terms
+- https://ploid.com/llms.txt
+note: Harvested only. Signals recorded carry substance on the page; the privacy policy mentions GDPR, UK GDPR, CCPA/CPRA,
+  Standard Contractual Clauses and US-based hosting in prose, but no accessibility statement, SBOM, transparency
+  report, AI transparency page, GPC statement, support-lifetime policy or data-residency option was found on the
+  site, the docs or llms.txt. No security.txt is served (ploid.com/.well-known/security.txt and /security.txt both
+  404 on 2026-10-07).
+signals:
+  data_subject_request:
+    url: https://ploid.com/data-rights
+    pointer_type: DataSubjectRequest
+    channels:
+    - email
+    self_serve: false
+    note: 'A dedicated Data rights & requests page: email channel with subject-line routing, quick links for deletion/removal
+      (including opt-out / do-not-sell), access, correction, restriction or objection, portability and GDPR Art.
+      14 data-not-obtained-directly requests, a stated response window and the Art. 77 complaint right.'
+    evidence:
+    - source: https://ploid.com/data-rights
+      http_status: 200
+      fetched: '2026-10-07'
+      quote: For access, correction, or deletion of specific personal data without closing your account, email Kamran@ploid.co
+        or use the Deletion / removal quick link below.
+    - source: https://ploid.com/data-rights
+      http_status: 200
+      fetched: '2026-10-07'
+      quote: Typical response times depend on applicable law (for example, the GDPR often allows up to one month,
+        subject to limited extensions).
+    - source: https://ploid.com/data-rights
+      http_status: 200
+      fetched: '2026-10-07'
+      quote: If you believe our processing infringes the GDPR, you may lodge a complaint with a supervisory authority
+        in your country of residence, place of work, or where you consider an infringement occurred (GDPR Art. 77).
+  subprocessors:
+    url: https://ploid.com/privacy
+    pointer_type: Subprocessors
+    dated: false
+    section: Data sharing
+    note: A subprocessors table embedded in the privacy policy (not a standalone dated list) naming Resend, FullEnrich,
+      Amazon Web Services EMEA SARL and Cloudflare Inc. with the data each receives.
+    evidence:
+    - source: https://ploid.com/privacy
+      http_status: 200
+      fetched: '2026-10-07'
+      quote: FullEnrich | FullEnrich (or its affiliates) | Email and phone enrichment (including work and personal
+        email fields returned by their systems)
+    - source: https://ploid.com/privacy
+      http_status: 200
+      fetched: '2026-10-07'
+      quote: We will notify you of material changes to subprocessors or sharing practices where your contract or
+        law requires.

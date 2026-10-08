@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/ploid/main/json-schema/ploid-search-handoff-response-schema.json",
+  "title": "SearchHandoffResponse",
+  "x-generated": "2026-10-07",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/ploid-openapi.yml#/components/schemas/SearchHandoffResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data",
+    "meta"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "set_id",
+        "search_id",
+        "status",
+        "criteria",
+        "pricing",
+        "set_url",
+        "items_url",
+        "events_url",
+        "request"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "const": "async"
+        },
+        "set_id": {
+          "type": "string"
+        },
+        "search_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "const": "running"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Criteria every admitted row is verified against."
+        },
+        "pricing": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Estimate; billing settles on admitted rows."
+        },
+        "set_url": {
+          "type": "string"
+        },
+        "items_url": {
+          "type": "string",
+          "description": "Page admitted rows, usable while the search runs."
+        },
+        "events_url": {
+          "type": "string",
+          "description": "Server-sent progress events."
+        },
+        "request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "query",
+            "category",
+            "num_results"
+          ],
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "category": {
+              "type": "string",
+              "const": "people"
+            },
+            "num_results": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "criteria": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "resolved_query": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "meta": {
+      "$ref": "#/$defs/PublicCreditsResponseMeta"
+    }
+  },
+  "$defs": {
+    "PublicCreditsResponseMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "credits_charged"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string"
+        },
+        "credits_charged": {
+          "type": "number",
+          "minimum": 0
+        },
+        "remaining_credits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,96 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/mcp
+sources:
+- https://ploid.com/documentation/mcp
+- https://ploid.com/.well-known/oauth-protected-resource
+- https://api.ploid.com/.well-known/oauth-authorization-server
+- https://ploid.com/llms.txt
+- https://ploid.com/.well-known/mcp/server-card.json
+status: published
+name: Ploid MCP Server
+description: Ploid's hosted Streamable HTTP MCP server for people research inside ChatGPT, Claude and other remote
+  MCP clients. Connections are scoped to an approved Ploid workspace and consume that workspace's ACU balance; the
+  three research tools can consume paid usage.
+server:
+  name: Ploid
+  transport: streamable-http
+  url: https://api.ploid.com/mcp
+deployment:
+  mode: remote
+  endpoint: https://api.ploid.com/mcp
+  auth: oauth
+  verified: probed
+  checked: '2026-10-07'
+  probe: 'preflight-wave.py (2026-10-07) POST to https://api.ploid.com/mcp returned 401 while a control path returned
+    404: the endpoint exists and is OAuth-gated. The docs page names the same URL as the hosted endpoint, and https://ploid.com/.well-known/oauth-protected-resource
+    declares resource https://api.ploid.com/mcp with authorization_servers [https://api.ploid.com].'
+  oauth:
+    protected_resource_metadata: https://api.ploid.com/.well-known/oauth-protected-resource
+    authorization_server_metadata: https://api.ploid.com/.well-known/oauth-authorization-server
+    authorization_endpoint: https://ploid.com/auth/mcp
+    token_endpoint: https://api.ploid.com/oauth/token
+    registration_endpoint: https://api.ploid.com/oauth/register
+    revocation_endpoint: https://api.ploid.com/oauth/revoke
+    grant_types:
+    - authorization_code
+    - refresh_token
+    pkce: S256
+    scopes_granted:
+    - agent:chat
+    - people:enrich
+    - people:search
+    - account:read
+    token_lifetime: one-hour access tokens, rotating refresh tokens (docs)
+  local_stdio_note: The docs also describe a local stdio server ("npx @ploid/mcp login", sharing the CLI's key and
+    its default permissions people:enrich, people:search, linkedin:read, account:read, account:write) and say it
+    is open source at github.com/ploidcom/ploid-mcp, but on 2026-10-07 registry.npmjs.org returned 404 for @ploid/mcp
+    and the GitHub repository returned 404, so no installable package could be verified and mode is recorded as
+    remote only.
+tools_count: 5
+tools_source: 'Provider-published "Available tools" table on https://ploid.com/documentation/mcp (l3: table). These
+  are the names the provider documents; the live tools/list is OAuth-gated (401) and was not called.'
+tools:
+- name: research_person
+  description: Source-reviewed deep research on one person. Calls POST /v1/person (one deep mode; first successful
+    profile costs a fixed 25 ACU, free rereads for 90 days).
+  api: POST /v1/person
+  inputs:
+    linkedin_url: The person's LinkedIn profile URL
+    name: The person's full name; requires company_domain
+    company_domain: Web domain of the person's company, for example acme.com
+- name: find_people
+  description: Build a verified list of people from a natural-language query (count up to 25). Creates a People
+    Set through POST /v1/sets.
+  api: POST /v1/sets
+- name: find_decision_makers
+  description: Build a verified list of likely buyers at a company (company, product being sold, optional titles,
+    count up to 20). Creates a People Set through POST /v1/sets.
+  api: POST /v1/sets
+- name: get_research_status
+  description: Retrieve a run's status or completed result using its run_id (person-<id> or set-<id>); read-only,
+    poll no more often than every five seconds.
+  api: Person run or Set status
+- name: cancel_research
+  description: Explicitly stop a run; cancellation does not refund work already done.
+  api: Person run cancellation or Set cancel
+removed_tools:
+- personalize_message
+- research_company
+- run_agent
+removed_tools_note: Removed together with the Agent API per the docs; clients must reconnect to refresh the tool
+  list.
+authorship: provider
+server_card:
+  url: https://ploid.com/.well-known/mcp/server-card.json
+  also_served_on: https://app.ploid.com/.well-known/mcp/server-card.json
+  saved: well-known/ploid-mcp-server-card.json
+  name: io.github.ploidcom/ploid-mcp
+  version: 0.2.0
+  remotes:
+  - type: streamable-http
+    url: https://api.ploid.com/mcp
+  repository: https://github.com/ploidcom/ploid-mcp
+  note: Provider-published MCP server card (200, application JSON) harvested by harvest-well-known.py on 2026-10-07;
+    it confirms the remote Streamable HTTP endpoint and names the repository, which returned 404 to an anonymous
+    GitHub API request.

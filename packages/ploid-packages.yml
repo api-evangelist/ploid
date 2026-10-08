@@ -1,0 +1,40 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/cli
+sources:
+- https://ploid.com/documentation/cli
+- https://ploid.com/install
+- https://ploid.com/documentation/getting-started/authentication
+- https://ploid.com/documentation/mcp
+- https://registry.npmjs.org/@ploid%2Fmcp
+note: Ploid ships one first-party client, the Ploid CLI, and distributes it only through a URL installer (curl https://ploid.com/install -fsS
+  | bash) that downloads a single self-contained executable from https://ploid.com/downloads/ploid-cli; the installer script states it "never
+  clones the source repository or invokes npm". No Ploid package is published on npm (@ploid/mcp, @ploid/cli and ploid all 404 on registry.npmjs.org
+  on 2026-10-07), PyPI (ploid 404), and the GitHub org github.com/ploidcom lists no public repositories (api.github.com/orgs/ploidcom/repos returned
+  an empty list). The docs reference "npx @ploid/mcp login" for a local stdio MCP server and say the implementation is open source at github.com/ploidcom/ploid-mcp,
+  but that package is not on the public npm registry and the repository returned 404, so its version and publish date cannot be read.
+packages:
+- name: ploid-cli
+  registry: cdn
+  url: https://ploid.com/downloads/ploid-cli
+  install: curl https://ploid.com/install -fsS | bash
+  language: javascript
+  runtime: Node.js 20 or newer (macOS and Linux)
+  official: true
+  version: null
+  published: null
+  note: 'Unpinned URL distribution: the installer always downloads the current build from https://ploid.com/downloads/ploid-cli, so a consumer
+    cannot tell which version they are getting before running `ploid --version`; "ploid update" installs the latest release.'
+  docs: https://ploid.com/documentation/cli
+- name: '@ploid/mcp'
+  registry: npm
+  url: https://www.npmjs.com/package/@ploid/mcp
+  language: javascript
+  official: false
+  version: null
+  published: null
+  note: Referenced by the docs ("npx @ploid/mcp login", a local stdio MCP server using the CLI's credential) but registry.npmjs.org/@ploid%2Fmcp
+    returned 404 on 2026-10-07 and github.com/ploidcom/ploid-mcp returned 404, so the package is not publicly published; nothing to read for version
+    or date.
+  docs: https://ploid.com/documentation/mcp
+  ownership_audit: 'registry has no such package: official downgraded (harvest-packages.py --audit)'

@@ -1,0 +1,73 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/cli
+sources:
+  - https://ploid.com/documentation/cli
+  - https://ploid.com/documentation/cli/commands
+  - https://ploid.com/documentation/cli/errors-and-limits
+  - https://ploid.com/install
+name: Ploid CLI
+description: A focused command-line client for the Ploid Public API; macOS and Linux with Node.js 20 or newer. People Sets (preview) are available through the API but have no CLI command yet.
+install:
+  - method: url-installer
+    command: curl https://ploid.com/install -fsS | bash
+    note: '"The URL installer is the supported distribution channel for the CLI." Downloads one self-contained executable from https://ploid.com/downloads/ploid-cli; never clones the source or invokes npm.'
+  - method: update
+    command: ploid update
+    note: Installs the latest CLI release.
+requirements: Node.js 20 or newer; macOS or Linux
+authentication:
+  login: ploid login (device authorization flow; stores a scoped credential locally)
+  headless: ploid login --no-browser
+  ci: set PLOID_API_KEY
+  default_scopes: [people:enrich, people:search, linkedin:read, account:read, account:write]
+commands:
+  - group: credentials
+    commands: [login, logout, status]
+    purpose: Manage and verify the local credential
+  - group: account
+    commands: [usage]
+    purpose: Read usage and remaining ACU
+  - group: search
+    commands: [search]
+    purpose: Search Ploid's people index
+    example: ploid search "AI security founders in San Francisco" --limit 25 --type auto
+  - group: enrichment
+    commands: [enrich]
+    purpose: Enrich a known LinkedIn identity
+    example: ploid enrich https://www.linkedin.com/in/example --fields profile,email
+  - group: social
+    commands: [socials, linkedin]
+    purpose: Enrich one public social profile; use supported public LinkedIn reads
+    example: ploid socials --github octocat
+  - group: maintenance
+    commands: [update]
+    purpose: Install the latest CLI release
+global_flags:
+  - flag: --api-key <key>
+    purpose: Override the environment and saved credential
+  - flag: --base-url <url>
+    purpose: Override https://api.ploid.com
+  - flag: --json
+    purpose: Emit machine-readable JSON
+  - flag: --quiet
+    purpose: Suppress progress output
+  - flag: --timeout <seconds>
+    purpose: Set the client deadline (default 90 seconds); 0 disables it
+  - flag: -v, --version
+    purpose: Print the installed version
+exit_codes:
+  - code: 0
+    meaning: Success
+  - code: 1
+    meaning: Invalid local input or an unexpected local failure
+  - code: 2
+    meaning: The Ploid API returned an error
+  - code: 3
+    meaning: Authentication is missing
+key_flows:
+  - name: Machine-readable search
+    steps: ['ploid --json search "revenue leaders at developer-tool startups"', 'ploid --json usage']
+    note: Global flags go before the command.
+retry_behavior: The CLI does not automatically retry; respect Retry-After on 429 and retry transient 5xx with bounded exponential backoff and jitter.
+help: 'ploid --help, ploid search --help, ploid linkedin --help ("Built-in help is the source of truth for flags in the installed version.")'

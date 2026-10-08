@@ -1,0 +1,39 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/api
+sources:
+  - https://ploid.com/documentation/api
+  - https://ploid.com/documentation/api/person
+  - https://ploid.com/documentation/api/sets
+  - https://ploid.com/documentation/mcp
+  - openapi/ploid-openapi.yml
+versioning:
+  scheme: URL path version (/v1); OpenAPI info.version 2.0.0
+  current: v1
+  policy: >-
+    "The /v1 response envelopes are stable. Ranking, providers, and cache strategy may evolve without a
+    version change when field names and response semantics remain compatible."
+  docs: https://ploid.com/documentation/api
+deprecation:
+  policy: null
+  note: >-
+    No deprecation policy page, Sunset or Deprecation header is documented, and the OpenAPI document marks
+    no operation deprecated. The docs record removals in prose instead: the /v1/agent endpoint was
+    "removed" and replaced by People Sets, and the MCP tools personalize_message, research_company and
+    run_agent "were removed together with the Agent API". Person endpoint: "Removed depth and include
+    fields return 422 rather than silently changing price or output."
+  deprecated_operations: []
+status_page: null
+status_page_note: No status page is linked from the site, the docs or llms.txt (not probed by pattern).
+sla: null
+sla_note: 'Pricing page lists "Custom SLAs" as "By agreement" on the Custom plan only.'
+preview_surfaces:
+  - name: People Sets
+    status: preview
+    note: '"The family is not in the public OpenAPI document yet, and its request and response contracts may change before general availability."'
+    docs: https://ploid.com/documentation/api/sets
+retention:
+  - item: Person run inputs and results
+    period: seven days, then polling returns 410 run_expired
+  - item: Successful person profile reread
+    period: free for 90 days for the same organization

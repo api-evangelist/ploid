@@ -1,0 +1,92 @@
+generated: '2026-10-07'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 5
+  own: 4
+  other_domain: 0
+  platform: 1
+  roles:
+  - api
+  - identity
+  - source
+  - website
+hosts:
+- host: api.ploid.com
+  found_by:
+  - apis[]
+  - probed
+  - site-links
+  - spec-found
+  - contract-discovery
+  - well-known
+  - vendor-detect
+  types: []
+  serves:
+  - api
+  - spec
+  - cdn
+  vendor: cloudflare
+  registrable_domain: ploid.com
+  role: api
+  relation: own
+- host: app.ploid.com
+  found_by:
+  - pointer
+  - well-known
+  types:
+  - Login
+  - SignUp
+  serves: []
+  platform: github.com
+  registrable_domain: ploid.com
+  role: identity
+  relation: own
+- host: auth.ploid.com
+  found_by:
+  - probed
+  - site-links
+  - contract-discovery
+  - well-known
+  types: []
+  serves: []
+  registrable_domain: ploid.com
+  role: identity
+  relation: own
+- host: github.com
+  found_by:
+  - pointer
+  types:
+  - GitHubOrganization
+  serves: []
+  registrable_domain: github.com
+  role: source
+  relation: platform
+- host: ploid.com
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - docs-index
+  - spec-found
+  - contract-discovery
+  - well-known
+  types:
+  - Website
+  - Documentation
+  - APIReference
+  - GettingStarted
+  - Pricing
+  - TermsOfService
+  - PrivacyPolicy
+  - DataSubjectRequest
+  - About
+  - Subprocessors
+  serves:
+  - docs
+  - spec
+  platform: github.com
+  registrable_domain: ploid.com
+  role: website
+  relation: own

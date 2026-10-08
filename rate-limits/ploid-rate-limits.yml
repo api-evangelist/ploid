@@ -1,0 +1,70 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/api/errors-and-limits
+sources:
+  - https://ploid.com/documentation/api/errors-and-limits
+  - https://ploid.com/documentation/api/social
+  - https://ploid.com/documentation/api/search
+name: Ploid Public API rate limits
+published: true
+limit_count: 6
+note: >-
+  "Every public request consumes both an organization-plan bucket and an API-key bucket. The effective
+  limit is the lowest bucket that applies." Enterprise overrides can raise the organization limit; a key
+  can have a lower per-minute limit for isolation or safety. Rejected (429) calls are never billed. Plan
+  names in the limits table (Free, Pay as you go, API Pro, Starter, Pro, Scale, Teams) differ from the
+  public pricing page's Growth / Scale / Custom tiers.
+limits:
+  - name: Organization limit, Free plan
+    limit_text: 10 requests/minute
+    limit: 10
+    window: minute
+    scope: organization
+    plan: Free
+  - name: Organization limit, Pay as you go
+    limit_text: 30 requests/minute
+    limit: 30
+    window: minute
+    scope: organization
+    plan: Pay as you go
+  - name: Organization limit, API Pro, Starter, or Pro
+    limit_text: 300 requests/minute
+    limit: 300
+    window: minute
+    scope: organization
+    plan: API Pro, Starter, or Pro
+  - name: Organization limit, Scale or Teams
+    limit_text: 1,000 requests/minute
+    limit: 1000
+    window: minute
+    scope: organization
+    plan: Scale or Teams
+  - name: Route family ceiling, /v1/socials and /v1/linkedin/* per minute
+    limit_text: '60'
+    limit: 60
+    window: minute
+    scope: route-family
+    endpoint: /v1/socials, /v1/linkedin/*
+    operations: [enrichSocialProfile, getLinkedInProfile, searchLinkedInPeople, listLinkedInPosts, listLinkedInProfileComments, getLinkedInCompany, listLinkedInCompanyPosts]
+    note: Table row "/v1/socials | 60 | 600" under "Some route families add a tighter ceiling"; the Social page states the same as "capped at 60 requests per minute and 600 per hour".
+  - name: Route family ceiling, /v1/socials and /v1/linkedin/* per hour
+    limit_text: '600'
+    limit: 600
+    window: hour
+    scope: route-family
+    endpoint: /v1/socials, /v1/linkedin/*
+    operations: [enrichSocialProfile, getLinkedInProfile, searchLinkedInPeople, listLinkedInPosts, listLinkedInProfileComments, getLinkedInCompany, listLinkedInCompanyPosts]
+headers:
+  - name: Retry-After
+    description: Included on every 429; also on 503 upstream_unavailable (Retry-After 1)
+  - name: error.retry_after_seconds
+    description: Body field on organization and key bucket failures (rate_limited envelope)
+exceeded_status: 429
+exceeded_code: rate_limited
+guidance:
+  - Respect Retry-After.
+  - Add jitter before retrying.
+  - Do not retry an unbounded number of times.
+  - Reduce request concurrency.
+budgets:
+  description: Per-key daily and monthly ACU budgets (daily_budget_exceeded / monthly_budget_exceeded); read active budget and usage context from GET /v1/account/usage.

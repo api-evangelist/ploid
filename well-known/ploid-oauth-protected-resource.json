@@ -1,0 +1,1 @@
+{"resource":"https://api.ploid.com/mcp","authorization_servers":["https://api.ploid.com"],"scopes_supported":["agent:chat","people:enrich","people:search","account:read"],"bearer_methods_supported":["header"],"resource_documentation":"https://ploid.com/documentation/mcp"}

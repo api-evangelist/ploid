@@ -1,0 +1,59 @@
+# Ploid
+
+> Ploid is a people search and intelligence platform: a living index of more than two billion people, available through the web app, REST API, CLI, and MCP.
+
+## When to use Ploid
+
+Use Ploid to find people by role, company, location, or professional experience; resolve a known person's identity; enrich a LinkedIn profile; research a company and its decision makers; or build evidence-backed personalization. Cite returned sources and distinguish evidence from inference. Use the documented API instead of scraping the workspace UI.
+
+## Getting started
+
+Sign up at https://app.ploid.com/login?mode=signup and complete workspace onboarding. Self-serve API keys are available in https://app.ploid.com/workspace/settings?section=api-keys. For a first-time MCP connection without an existing workspace or subscription, approving access creates a free 30-day trial workspace with no card required. Web onboarding and paid plans have their own card requirements; consult the pricing page. Paid operations consume the shared workspace balance. Never share API keys in public browser code.
+
+## REST API
+
+- [OpenAPI 3.1 specification](https://ploid.com/openapi.json): operation IDs, request schemas, responses, and authentication.
+- [API documentation](https://ploid.com/documentation/api): base URL https://api.ploid.com/v1.
+- [Search](https://ploid.com/documentation/api/search): POST /v1/search for a bounded people search. Add up to five criteria to verify and rank results by evidence; large or async searches return 202 with a background Set to poll.
+- POST /v1/resolve: identify one person from a full name plus at least one clue (company, role, location, address, work or personal email, or phone) and get a permanent person_id. Free when nothing is found; see operation resolvePerson in the OpenAPI document.
+- [Person](https://ploid.com/documentation/api/person): POST /v1/person for sourced identity research.
+- [People Sets (preview)](https://ploid.com/documentation/api/sets): POST /v1/sets for durable, criteria-verified people lists built in the background. Not in the OpenAPI document yet.
+- [Enrichment](https://ploid.com/documentation/api/enrichment): POST /v1/enrich for a known LinkedIn identity.
+- [Errors and limits](https://ploid.com/documentation/api/errors-and-limits): usage budgets and retry behavior.
+
+Authenticate using Authorization: Bearer $PLOID_API_KEY. Choose the least-privilege scopes needed for the operation. Honor Retry-After on 429 responses. Use Idempotency-Key for supported non-streaming writes, poll durable runs instead of retrying the POST, and set per-key usage budgets.
+
+## Official CLI
+
+Install the Ploid command-line tool on macOS or Linux with Node.js 20 or newer:
+
+```bash
+curl https://ploid.com/install -fsS | bash
+ploid login
+ploid --json search "AI security founders in San Francisco" --limit 10
+```
+
+For CI, supply PLOID_API_KEY. Global flags such as --json go before the command.
+
+- [CLI documentation](https://ploid.com/documentation/cli)
+- [CLI commands](https://ploid.com/documentation/cli/commands)
+
+## MCP server
+
+Connect a Streamable HTTP MCP client to https://api.ploid.com/mcp. The server uses OAuth 2.1 with browser-approved workspace access. Approve the requested scopes before calling tools; calls may consume paid usage.
+
+- [MCP setup and tools](https://ploid.com/documentation/mcp)
+- [OAuth scopes and resource metadata](https://ploid.com/.well-known/oauth-protected-resource)
+
+## Site index
+
+- [Documentation](https://ploid.com/documentation)
+- [Pricing](https://ploid.com/pricing)
+- [Company](https://ploid.com/company)
+- [Contact support](mailto:Kamran@ploid.co)
+- [Privacy](https://ploid.com/privacy)
+- [Data rights](https://ploid.com/data-rights)
+- [Terms](https://ploid.com/terms)
+- [Sitemap](https://ploid.com/sitemap.xml)
+
+The homepage and documentation support Accept: text/markdown. Documentation Markdown is also available at /api/documentation-markdown followed by the documentation slug.

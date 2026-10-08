@@ -1,0 +1,1043 @@
+openapi: 3.2.0
+info:
+  title: Ploid People API
+  version: 2.0.0
+  description: 'Operations tagged People across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.ploid.com
+security:
+- bearerAuth: []
+- apiKeyAuth: []
+tags:
+- name: People
+paths:
+  /v1/person:
+    post:
+      operationId: getPerson
+      summary: Get an evidence-backed person record
+      description: Resolve one reviewed deep person profile. An eligible cached profile returns 200, including stale data with a queued refresh. Unseen people and snapshots requiring new review return a durable 202 run. Fresh research can take minutes; poll the returned run ID. A completed uncertain identity returns data:null with meta.resolution=unsure and reason ambiguous_identity or insufficient_evidence. The first successful profile costs exactly 25 ACU on every plan; organization-wide rereads are free for 90 days. Failed, uncertain, and not-found runs are free. Current role fields, age, and social audience/activity metrics are not populated by the current reviewed projection.
+      tags:
+      - People
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        description: Recommended on POST. Reusing the same key replays the same run and bills once.
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonRequest'
+      responses:
+        '200':
+          description: Cached reviewed person record (possibly stale with refresh queued) or a free not-found result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonResponse'
+        '202':
+          description: Deep research was queued. Poll the returned URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonRunResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '402':
+          description: The fixed 25 ACU price exceeds available ACU or API-key budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: Missing people:enrich scope or public-API access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '409':
+          description: Idempotency-Key conflict.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '422':
+          description: Strict request validation failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '503':
+          description: The durable queue, person identity, or compatible stored profile is unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+    servers:
+    - url: https://api.ploid.com
+  /v1/person/runs/{id}:
+    get:
+      operationId: getPersonRun
+      summary: Poll a deep person run
+      tags:
+      - People
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Queued/running state, a completed reviewed person, a not-found result, or an uncharged unsure outcome with suggested clues.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PersonRunResponse'
+                - $ref: '#/components/schemas/PersonResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: Missing people:enrich scope or public-API access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '404':
+          description: Run not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '409':
+          description: Run was cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '410':
+          description: Run payload expired after seven days.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '503':
+          description: Deep research failed; no ACU was charged.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+    delete:
+      operationId: cancelPersonRun
+      summary: Cancel a deep person run
+      tags:
+      - People
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Run cancelled without charge.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonRunResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: Missing people:enrich scope or public-API access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '404':
+          description: Run not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '409':
+          description: Run is no longer active.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '410':
+          description: Run payload expired after seven days.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+    servers:
+    - url: https://api.ploid.com
+components:
+  schemas:
+    PublicApiError:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          - request_id
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            request_id:
+              type: string
+            http_status:
+              type: integer
+              minimum: 400
+              maximum: 599
+              description: Semantic status when an error terminates a response after streaming headers opened.
+            retryable:
+              type: boolean
+            unavailable_fields:
+              type: array
+              items:
+                type: string
+                enum:
+                - work_email
+                - personal_email
+                - phone
+                - profile
+                - email
+              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
+            usage:
+              type: object
+              additionalProperties: false
+              required:
+              - acu_used
+              - billed
+              - free
+              - not_found
+              properties:
+                acu_used:
+                  type: number
+                  minimum: 0
+                acu_remaining:
+                  type: number
+                  minimum: 0
+                acu_value_usd:
+                  type: number
+                  const: 0.1
+                billed:
+                  type: array
+                  items:
+                    type: string
+                free:
+                  type: array
+                  items:
+                    type: string
+                not_found:
+                  type: array
+                  items:
+                    type: string
+          additionalProperties: true
+    PersonRequest:
+      type: object
+      properties:
+        identifier:
+          anyOf:
+          - type: object
+            properties:
+              person_id:
+                type: string
+                minLength: 1
+                maxLength: 500
+            required:
+            - person_id
+            additionalProperties: false
+          - type: object
+            properties:
+              linkedin_url:
+                type: string
+                format: uri
+            required:
+            - linkedin_url
+            additionalProperties: false
+          - type: object
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 200
+              company_domain:
+                type: string
+                minLength: 3
+                maxLength: 253
+            required:
+            - name
+            - company_domain
+            additionalProperties: false
+      required:
+      - identifier
+      additionalProperties: false
+    PersonRunResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            run_id:
+              type: string
+            status:
+              type: string
+              enum:
+              - queued
+              - running
+              - cancelled
+            poll_url:
+              type: string
+          required:
+          - run_id
+          - status
+          additionalProperties: false
+        meta:
+          type: object
+          properties:
+            request_id:
+              type: string
+            usage:
+              type: object
+              properties:
+                acu_used:
+                  type: number
+                  minimum: 0
+                acu_remaining:
+                  type: number
+                  minimum: 0
+                acu_value_usd:
+                  type: number
+                billed:
+                  type: array
+                  items:
+                    type: string
+                free:
+                  type: array
+                  items:
+                    type: string
+                not_found:
+                  type: array
+                  items:
+                    type: string
+              required:
+              - acu_used
+              - billed
+              - free
+              - not_found
+              additionalProperties: false
+          required:
+          - request_id
+          - usage
+          additionalProperties: false
+      required:
+      - data
+      - meta
+      additionalProperties: false
+    PersonResponse:
+      anyOf:
+      - type: object
+        properties:
+          data:
+            anyOf:
+            - type: object
+              properties:
+                person_id:
+                  type: string
+                summary:
+                  type: string
+                age_range:
+                  anyOf:
+                  - type: object
+                    properties:
+                      min:
+                        type: integer
+                        minimum: 12
+                        maximum: 100
+                      max:
+                        type: integer
+                        minimum: 13
+                        maximum: 100
+                    required:
+                    - min
+                    - max
+                    additionalProperties: false
+                  - type: 'null'
+                identity:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    linkedin_url:
+                      anyOf:
+                      - type: string
+                        format: uri
+                      - type: 'null'
+                    headline:
+                      type:
+                      - string
+                      - 'null'
+                    company:
+                      type:
+                      - string
+                      - 'null'
+                    location:
+                      type:
+                      - string
+                      - 'null'
+                    confidence:
+                      type: number
+                      minimum: 0
+                      maximum: 1
+                  required:
+                  - name
+                  - linkedin_url
+                  - headline
+                  - company
+                  - location
+                  - confidence
+                  additionalProperties: false
+                source_links:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      url:
+                        type: string
+                        format: uri
+                      categories:
+                        type: array
+                        items:
+                          type: string
+                      status:
+                        type: string
+                        enum:
+                        - found
+                        - not_verified
+                      confidence:
+                        type: number
+                        minimum: 0
+                        maximum: 1
+                    required:
+                    - title
+                    - url
+                    - categories
+                    - status
+                    - confidence
+                    additionalProperties: false
+                  maxItems: 25
+                professional:
+                  type: object
+                  properties:
+                    current:
+                      type: object
+                      properties:
+                        headline:
+                          type:
+                          - string
+                          - 'null'
+                        company:
+                          type:
+                          - string
+                          - 'null'
+                        location:
+                          type:
+                          - string
+                          - 'null'
+                      required:
+                      - headline
+                      - company
+                      - location
+                      additionalProperties: false
+                    history:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          title:
+                            type:
+                            - string
+                            - 'null'
+                          company:
+                            type:
+                            - string
+                            - 'null'
+                          period:
+                            type:
+                            - string
+                            - 'null'
+                          location:
+                            type:
+                            - string
+                            - 'null'
+                          confidence:
+                            type: number
+                            minimum: 0
+                            maximum: 1
+                          timeframe:
+                            type: string
+                            enum:
+                            - historical
+                            - undated
+                            - dated
+                          evidence_statement:
+                            type: string
+                        required:
+                        - title
+                        - company
+                        - period
+                        - location
+                        - confidence
+                        additionalProperties: false
+                    education:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          school:
+                            type:
+                            - string
+                            - 'null'
+                          degree:
+                            type:
+                            - string
+                            - 'null'
+                          field_of_study:
+                            type:
+                            - string
+                            - 'null'
+                          period:
+                            type:
+                            - string
+                            - 'null'
+                          confidence:
+                            type: number
+                            minimum: 0
+                            maximum: 1
+                          timeframe:
+                            type: string
+                            enum:
+                            - historical
+                            - undated
+                            - dated
+                          evidence_statement:
+                            type: string
+                        required:
+                        - school
+                        - degree
+                        - field_of_study
+                        - period
+                        - confidence
+                        additionalProperties: false
+                    skills:
+                      anyOf:
+                      - type: array
+                        items:
+                          type: string
+                      - type: 'null'
+                  required:
+                  - current
+                  - history
+                  - education
+                  - skills
+                  additionalProperties: false
+                presence:
+                  type: object
+                  properties:
+                    platforms:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          timeframe:
+                            type: string
+                            enum:
+                            - historical
+                            - undated
+                            - dated
+                          evidence_statement:
+                            type: string
+                          source_urls:
+                            type: array
+                            items:
+                              type: string
+                              format: uri
+                          platform:
+                            type: string
+                          handle:
+                            type:
+                            - string
+                            - 'null'
+                          url:
+                            type: string
+                            format: uri
+                          display_name:
+                            type:
+                            - string
+                            - 'null'
+                          bio:
+                            type:
+                            - string
+                            - 'null'
+                          avatar_url:
+                            anyOf:
+                            - type: string
+                              format: uri
+                            - type: 'null'
+                          followers:
+                            anyOf:
+                            - type: integer
+                              minimum: 0
+                            - type: 'null'
+                          following:
+                            anyOf:
+                            - type: integer
+                              minimum: 0
+                            - type: 'null'
+                          content_count:
+                            anyOf:
+                            - type: integer
+                              minimum: 0
+                            - type: 'null'
+                          total_likes:
+                            anyOf:
+                            - type: integer
+                              minimum: 0
+                            - type: 'null'
+                          verified:
+                            type:
+                            - boolean
+                            - 'null'
+                          private:
+                            type:
+                            - boolean
+                            - 'null'
+                          last_active:
+                            anyOf:
+                            - type: string
+                              format: date-time
+                            - type: 'null'
+                          topics:
+                            type: array
+                            items:
+                              type: string
+                          recent_activity:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                kind:
+                                  type: string
+                                  enum:
+                                  - post
+                                  - share
+                                  - article
+                                  - video
+                                  - repository
+                                  - unknown
+                                url:
+                                  type: string
+                                  format: uri
+                                text:
+                                  type:
+                                  - string
+                                  - 'null'
+                                published_at:
+                                  anyOf:
+                                  - type: string
+                                    format: date-time
+                                  - type: 'null'
+                                media_urls:
+                                  type: array
+                                  items:
+                                    type: string
+                                    format: uri
+                                likes:
+                                  anyOf:
+                                  - type: integer
+                                    minimum: 0
+                                  - type: 'null'
+                                stars:
+                                  anyOf:
+                                  - type: integer
+                                    minimum: 0
+                                  - type: 'null'
+                                comments:
+                                  anyOf:
+                                  - type: integer
+                                    minimum: 0
+                                  - type: 'null'
+                                shares:
+                                  anyOf:
+                                  - type: integer
+                                    minimum: 0
+                                  - type: 'null'
+                                views:
+                                  anyOf:
+                                  - type: integer
+                                    minimum: 0
+                                  - type: 'null'
+                              required:
+                              - kind
+                              - url
+                              - text
+                              - published_at
+                              - media_urls
+                              - likes
+                              - stars
+                              - comments
+                              - shares
+                              - views
+                              additionalProperties: false
+                          confidence:
+                            type: number
+                            minimum: 0
+                            maximum: 1
+                        required:
+                        - platform
+                        - handle
+                        - url
+                        - display_name
+                        - bio
+                        - avatar_url
+                        - followers
+                        - following
+                        - content_count
+                        - total_likes
+                        - verified
+                        - private
+                        - last_active
+                        - topics
+                        - recent_activity
+                        - confidence
+                        additionalProperties: false
+                  required:
+                  - platforms
+                  additionalProperties: false
+                signals:
+                  type: object
+                  properties:
+                    interests:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          timeframe:
+                            type: string
+                            enum:
+                            - historical
+                            - undated
+                            - dated
+                          evidence_statement:
+                            type: string
+                          source_urls:
+                            type: array
+                            items:
+                              type: string
+                              format: uri
+                          interest:
+                            type: string
+                          strength:
+                            type: number
+                            minimum: 0
+                            maximum: 1
+                          evidence_count:
+                            type: integer
+                            minimum: 0
+                          status:
+                            type: string
+                            enum:
+                            - found
+                            - not_verified
+                          source_url:
+                            anyOf:
+                            - type: string
+                              format: uri
+                            - type: 'null'
+                        required:
+                        - interest
+                        - strength
+                        - evidence_count
+                        - status
+                        - source_url
+                        additionalProperties: false
+                    activity_cadence:
+                      type: 'null'
+                    affinities:
+                      type: array
+                      minItems: 0
+                      maxItems: 0
+                      items: {}
+                    coverage:
+                      type: object
+                      additionalProperties:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum:
+                            - found
+                            - not_found
+                            - not_verified
+                            - unavailable
+                          evidenceCount:
+                            type: integer
+                            minimum: 0
+                        required:
+                        - status
+                        - evidenceCount
+                        additionalProperties: false
+                  required:
+                  - interests
+                  - activity_cadence
+                  - affinities
+                  - coverage
+                  additionalProperties: false
+                provenance:
+                  type: object
+                  additionalProperties:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        source:
+                          type: string
+                        source_url:
+                          type: string
+                          format: uri
+                        first_seen:
+                          anyOf:
+                          - type: string
+                            format: date-time
+                          - type: 'null'
+                        last_seen:
+                          type: string
+                          format: date-time
+                        confidence:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+                      required:
+                      - source
+                      - source_url
+                      - first_seen
+                      - last_seen
+                      - confidence
+                      additionalProperties: false
+              required:
+              - person_id
+              - summary
+              - age_range
+              - identity
+              - source_links
+              - professional
+              - presence
+              - signals
+              - provenance
+              additionalProperties: false
+            - type: 'null'
+          meta:
+            type: object
+            properties:
+              request_id:
+                type: string
+              found:
+                type: boolean
+              stale:
+                type: boolean
+              access_expires_at:
+                type: string
+                format: date-time
+              usage:
+                type: object
+                properties:
+                  acu_used:
+                    type: number
+                    minimum: 0
+                  acu_remaining:
+                    type: number
+                    minimum: 0
+                  acu_value_usd:
+                    type: number
+                  billed:
+                    type: array
+                    items:
+                      type: string
+                  free:
+                    type: array
+                    items:
+                      type: string
+                  not_found:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - acu_used
+                - billed
+                - free
+                - not_found
+                additionalProperties: false
+            required:
+            - request_id
+            - found
+            - usage
+            additionalProperties: false
+        required:
+        - data
+        - meta
+        additionalProperties: false
+      - type: object
+        properties:
+          data:
+            type: 'null'
+          meta:
+            type: object
+            properties:
+              resolution:
+                type: string
+                const: unsure
+              reason:
+                type: string
+                enum:
+                - ambiguous_identity
+                - insufficient_evidence
+              message:
+                type: string
+                minLength: 1
+                maxLength: 500
+              limitations:
+                type: array
+                items:
+                  type: string
+                  minLength: 1
+                  maxLength: 2000
+                maxItems: 32
+              suggested_clues:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - linkedin_url
+                  - personal_website
+                maxItems: 2
+              request_id:
+                type: string
+              found:
+                type: boolean
+                const: false
+              stale:
+                type: boolean
+                const: false
+              usage:
+                type: object
+                properties:
+                  acu_used:
+                    type: number
+                    const: 0
+                  acu_remaining:
+                    type: number
+                    minimum: 0
+                  acu_value_usd:
+                    type: number
+                  billed:
+                    type: array
+                    minItems: 0
+                    maxItems: 0
+                    items: {}
+                  free:
+                    type: array
+                    minItems: 0
+                    maxItems: 0
+                    items: {}
+                  not_found:
+                    type: array
+                    minItems: 0
+                    maxItems: 0
+                    items: {}
+                required:
+                - acu_used
+                - billed
+                - free
+                - not_found
+                additionalProperties: false
+            required:
+            - resolution
+            - reason
+            - message
+            - limitations
+            - suggested_clues
+            - request_id
+            - found
+            - usage
+            additionalProperties: false
+        required:
+        - data
+        - meta
+        additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+x-refined-from:
+- ploid-openapi.json
+- ploid-openapi.yml

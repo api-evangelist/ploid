@@ -1,0 +1,47 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/getting-started/authentication
+docs: https://ploid.com/documentation/getting-started/authentication
+sources:
+  - https://ploid.com/documentation/getting-started/authentication
+  - https://ploid.com/.well-known/oauth-protected-resource
+  - https://api.ploid.com/.well-known/oauth-authorization-server
+  - https://auth.ploid.com/.well-known/openid-configuration
+  - https://ploid.com/documentation/mcp
+note: >-
+  The OpenAPI document declares bearer and x-api-key schemes with no oauth2 scheme, so scopes are
+  documented rather than derived. API keys are permissioned with these scopes; the hosted MCP server is
+  an OAuth 2.1 protected resource whose metadata lists agent:chat, people:enrich, people:search and
+  account:read. An endpoint called without its required permission returns 403 insufficient_scope.
+  auth.ploid.com is a separate OpenID Connect issuer for workspace login (scopes openid, profile, email,
+  offline_access) and is not the API authorization server.
+scopes:
+  - scope: agent:chat
+    description: Use the harness context and chat completions
+    operations: [getHarnessContext, createHarnessChatCompletion]
+    mcp_granted: true
+  - scope: people:search
+    description: Search the public people index; also required for the People Sets preview
+    operations: [syncPeopleSearch, resolvePerson]
+    mcp_granted: true
+  - scope: people:enrich
+    description: Enrich supported profile and contact fields (POST /v1/person, POST /v1/enrich, POST /v1/socials require people:enrich)
+    operations: [getPerson, getPersonRun, cancelPersonRun, enrichPerson, enrichSocialProfile]
+    mcp_granted: true
+  - scope: linkedin:read
+    description: Read the documented public LinkedIn operations
+    operations: [getLinkedInProfile, searchLinkedInPeople, listLinkedInPosts, listLinkedInProfileComments, getLinkedInCompany, listLinkedInCompanyPosts]
+    mcp_granted: false
+  - scope: account:read
+    description: Read usage and credits or revoke the caller key
+    operations: [getCredits, getAccountUsage, revokeCurrentApiKey]
+    mcp_granted: true
+  - scope: account:write
+    description: Granted to CLI-created keys by default (docs list it among the CLI's default permissions); no operation-level documentation.
+    mcp_granted: false
+oauth_metadata:
+  protected_resource: https://api.ploid.com/mcp
+  authorization_servers: [https://api.ploid.com]
+  scopes_supported: [agent:chat, people:enrich, people:search, account:read]
+  bearer_methods_supported: [header]
+  resource_documentation: https://ploid.com/documentation/mcp

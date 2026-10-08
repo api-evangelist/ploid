@@ -1,0 +1,52 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Ploid Public API
+  version: 1.0.0
+  x-generated: '2026-10-07'
+  x-method: generated
+  x-source: https://ploid.com/documentation/api
+extends: ../openapi/_original/ploid-openapi.yml
+actions:
+  - target: $.info
+    description: Add contact, terms and external docs read from the provider's site.
+    update:
+      contact:
+        name: Ploid
+        url: https://ploid.com/company
+        email: Kamran@ploid.co
+      termsOfService: https://ploid.com/terms
+      x-apievangelist-docs: https://ploid.com/documentation/api
+      x-apievangelist-llms-txt: https://ploid.com/llms.txt
+      x-apievangelist-mcp: https://api.ploid.com/mcp
+  - target: $
+    description: Point external documentation at the API reference.
+    update:
+      externalDocs:
+        description: Ploid API documentation
+        url: https://ploid.com/documentation/api
+  - target: $.paths['/v1/search'].post
+    description: Link the search operation to its docs page and rate-limit note.
+    update:
+      externalDocs:
+        url: https://ploid.com/documentation/api/search
+      x-apievangelist-notes: Accepts at most 150 results; rejected 429 calls are never billed.
+  - target: $.paths['/v1/person'].post
+    update:
+      externalDocs:
+        url: https://ploid.com/documentation/api/person
+      x-apievangelist-notes: Durable 202 run on a cache miss; 25 ACU per first successful profile, free rereads for 90 days.
+  - target: $.paths['/v1/enrich'].post
+    update:
+      externalDocs:
+        url: https://ploid.com/documentation/api/enrichment
+  - target: $.paths['/v1/socials'].post
+    update:
+      externalDocs:
+        url: https://ploid.com/documentation/api/social
+      x-apievangelist-rate-limit: 60 requests per minute and 600 per hour per route family
+  - target: $.components.securitySchemes.bearerAuth
+    update:
+      description: 'Ploid API key: Authorization: Bearer $PLOID_API_KEY. Scoped keys; see https://ploid.com/documentation/getting-started/authentication'
+  - target: $.components.securitySchemes.apiKeyAuth
+    update:
+      description: 'Ploid API key in the x-api-key header (equivalent to bearerAuth).'

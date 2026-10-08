@@ -1,0 +1,959 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/ploid/main/json-schema/ploid-person-response-schema.json",
+  "title": "PersonResponse",
+  "x-generated": "2026-10-07",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/ploid-openapi.yml#/components/schemas/PersonResponse",
+  "anyOf": [
+    {
+      "type": "object",
+      "properties": {
+        "data": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "person_id": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "age_range": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "min": {
+                          "type": "integer",
+                          "minimum": 12,
+                          "maximum": 100
+                        },
+                        "max": {
+                          "type": "integer",
+                          "minimum": 13,
+                          "maximum": 100
+                        }
+                      },
+                      "required": [
+                        "min",
+                        "max"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "identity": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "linkedin_url": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "headline": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "company": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "location": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "confidence": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "linkedin_url",
+                    "headline",
+                    "company",
+                    "location",
+                    "confidence"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_links": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "categories": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "found",
+                          "not_verified"
+                        ]
+                      },
+                      "confidence": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "url",
+                      "categories",
+                      "status",
+                      "confidence"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 25
+                },
+                "professional": {
+                  "type": "object",
+                  "properties": {
+                    "current": {
+                      "type": "object",
+                      "properties": {
+                        "headline": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "company": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "location": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "headline",
+                        "company",
+                        "location"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "company": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "period": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "location": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "confidence": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "timeframe": {
+                            "type": "string",
+                            "enum": [
+                              "historical",
+                              "undated",
+                              "dated"
+                            ]
+                          },
+                          "evidence_statement": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "company",
+                          "period",
+                          "location",
+                          "confidence"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "education": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "school": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "degree": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "field_of_study": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "period": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "confidence": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "timeframe": {
+                            "type": "string",
+                            "enum": [
+                              "historical",
+                              "undated",
+                              "dated"
+                            ]
+                          },
+                          "evidence_statement": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "school",
+                          "degree",
+                          "field_of_study",
+                          "period",
+                          "confidence"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "skills": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "current",
+                    "history",
+                    "education",
+                    "skills"
+                  ],
+                  "additionalProperties": false
+                },
+                "presence": {
+                  "type": "object",
+                  "properties": {
+                    "platforms": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "timeframe": {
+                            "type": "string",
+                            "enum": [
+                              "historical",
+                              "undated",
+                              "dated"
+                            ]
+                          },
+                          "evidence_statement": {
+                            "type": "string"
+                          },
+                          "source_urls": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uri"
+                            }
+                          },
+                          "platform": {
+                            "type": "string"
+                          },
+                          "handle": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "url": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "display_name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "bio": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "avatar_url": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "followers": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "following": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "content_count": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "total_likes": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "verified": {
+                            "type": [
+                              "boolean",
+                              "null"
+                            ]
+                          },
+                          "private": {
+                            "type": [
+                              "boolean",
+                              "null"
+                            ]
+                          },
+                          "last_active": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "topics": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "recent_activity": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "post",
+                                    "share",
+                                    "article",
+                                    "video",
+                                    "repository",
+                                    "unknown"
+                                  ]
+                                },
+                                "url": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "text": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "published_at": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "media_urls": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  }
+                                },
+                                "likes": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "stars": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "comments": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "shares": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "views": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "url",
+                                "text",
+                                "published_at",
+                                "media_urls",
+                                "likes",
+                                "stars",
+                                "comments",
+                                "shares",
+                                "views"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "confidence": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "required": [
+                          "platform",
+                          "handle",
+                          "url",
+                          "display_name",
+                          "bio",
+                          "avatar_url",
+                          "followers",
+                          "following",
+                          "content_count",
+                          "total_likes",
+                          "verified",
+                          "private",
+                          "last_active",
+                          "topics",
+                          "recent_activity",
+                          "confidence"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "platforms"
+                  ],
+                  "additionalProperties": false
+                },
+                "signals": {
+                  "type": "object",
+                  "properties": {
+                    "interests": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "timeframe": {
+                            "type": "string",
+                            "enum": [
+                              "historical",
+                              "undated",
+                              "dated"
+                            ]
+                          },
+                          "evidence_statement": {
+                            "type": "string"
+                          },
+                          "source_urls": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uri"
+                            }
+                          },
+                          "interest": {
+                            "type": "string"
+                          },
+                          "strength": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "evidence_count": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "found",
+                              "not_verified"
+                            ]
+                          },
+                          "source_url": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "interest",
+                          "strength",
+                          "evidence_count",
+                          "status",
+                          "source_url"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "activity_cadence": {
+                      "type": "null"
+                    },
+                    "affinities": {
+                      "type": "array",
+                      "minItems": 0,
+                      "maxItems": 0,
+                      "items": {}
+                    },
+                    "coverage": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "found",
+                              "not_found",
+                              "not_verified",
+                              "unavailable"
+                            ]
+                          },
+                          "evidenceCount": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "status",
+                          "evidenceCount"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "interests",
+                    "activity_cadence",
+                    "affinities",
+                    "coverage"
+                  ],
+                  "additionalProperties": false
+                },
+                "provenance": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "source": {
+                          "type": "string"
+                        },
+                        "source_url": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "first_seen": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "last_seen": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "confidence": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "required": [
+                        "source",
+                        "source_url",
+                        "first_seen",
+                        "last_seen",
+                        "confidence"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                }
+              },
+              "required": [
+                "person_id",
+                "summary",
+                "age_range",
+                "identity",
+                "source_links",
+                "professional",
+                "presence",
+                "signals",
+                "provenance"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "request_id": {
+              "type": "string"
+            },
+            "found": {
+              "type": "boolean"
+            },
+            "stale": {
+              "type": "boolean"
+            },
+            "access_expires_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "usage": {
+              "type": "object",
+              "properties": {
+                "acu_used": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "acu_remaining": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "acu_value_usd": {
+                  "type": "number"
+                },
+                "billed": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "free": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "not_found": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "acu_used",
+                "billed",
+                "free",
+                "not_found"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "request_id",
+            "found",
+            "usage"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "null"
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "resolution": {
+              "type": "string",
+              "const": "unsure"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "ambiguous_identity",
+                "insufficient_evidence"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "maxItems": 32
+            },
+            "suggested_clues": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "linkedin_url",
+                  "personal_website"
+                ]
+              },
+              "maxItems": 2
+            },
+            "request_id": {
+              "type": "string"
+            },
+            "found": {
+              "type": "boolean",
+              "const": false
+            },
+            "stale": {
+              "type": "boolean",
+              "const": false
+            },
+            "usage": {
+              "type": "object",
+              "properties": {
+                "acu_used": {
+                  "type": "number",
+                  "const": 0
+                },
+                "acu_remaining": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "acu_value_usd": {
+                  "type": "number"
+                },
+                "billed": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 0,
+                  "items": {}
+                },
+                "free": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 0,
+                  "items": {}
+                },
+                "not_found": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 0,
+                  "items": {}
+                }
+              },
+              "required": [
+                "acu_used",
+                "billed",
+                "free",
+                "not_found"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "resolution",
+            "reason",
+            "message",
+            "limitations",
+            "suggested_clues",
+            "request_id",
+            "found",
+            "usage"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

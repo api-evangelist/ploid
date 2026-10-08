@@ -1,0 +1,307 @@
+generated: '2026-10-07'
+method: derived
+generator: derive-vocabulary.py
+source: openapi/ploid-openapi.yml
+vocabulary:
+  name: Ploid Domain Vocabulary
+  description: 'Terms declared by Ploid''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-07'
+  terms:
+  - term: HarnessChatCompletionRequest
+    definition: 'Object declared by the contract with fields: model, messages, tools, tool_choice, parallel_tool_calls, response_format, stream,
+      stream_options, temperature, top_p, stop, seed. (2 more)'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/HarnessChatCompletionRequest
+  - term: HarnessChatCompletionResponse
+    definition: OpenAI-compatible completion payload with internal model/provider routing metadata removed.
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/HarnessChatCompletionResponse
+  - term: PublicApiError
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/PublicApiError
+  - term: PublicResponseMeta
+    definition: 'Object declared by the contract with fields: request_id.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/PublicResponseMeta
+  - term: PublicCreditsResponseMeta
+    definition: 'Object declared by the contract with fields: request_id, credits_charged, remaining_credits, cursor, message.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/PublicCreditsResponseMeta
+  - term: PersonFieldProvenance
+    definition: 'Object declared by the contract with fields: source, source_url, first_seen, last_seen, confidence.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/PersonFieldProvenance
+  - term: PersonRecord
+    definition: 'Object declared by the contract with fields: person_id, summary, age_range, identity, source_links, professional, presence, signals,
+      provenance.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/PersonRecord
+  - term: PersonRequest
+    definition: 'Object declared by the contract with fields: identifier.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/PersonRequest
+  - term: PersonRunResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/PersonRunResponse
+  - term: SyncSearchPerson
+    definition: Only resolved people are returned. Requested profile fields are present when selected and may be null when the people index has
+      no value.
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SyncSearchPerson
+  - term: SyncSearchResult
+    definition: 'Object declared by the contract with fields: url, title, score, person, verification.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SyncSearchResult
+  - term: SyncSearchGroundingResult
+    definition: 'Object declared by the contract with fields: url, title, snippet, source, observed_at, person.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SyncSearchGroundingResult
+  - term: SyncSearchResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SyncSearchResponse
+  - term: SearchHandoffResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SearchHandoffResponse
+  - term: ResolveRequest
+    definition: 'Object declared by the contract with fields: name, company, role, location, address, work_email, personal_email, phone.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/ResolveRequest
+  - term: ResolveResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/ResolveResponse
+  - term: SocialsResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SocialsResponse
+  - term: EnrichContact
+    definition: 'Object declared by the contract with fields: value, confidence, verification_status.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/EnrichContact
+  - term: EnrichFieldResult
+    definition: 'Object declared by the contract with fields: value, status, confidence, source, last_seen.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/EnrichFieldResult
+  - term: EnrichLinkedInProfile
+    definition: 'Object declared by the contract with fields: linkedin_url, name, headline, company, location, photo_url, skills, companies, schools,
+      total_years_experience, open_to_work, follower_count. (1 more)'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/EnrichLinkedInProfile
+  - term: EnrichLegacyResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/EnrichLegacyResponse
+  - term: EnrichContactResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/EnrichContactResponse
+  - term: LinkedInProfilePosition
+    definition: 'Object declared by the contract with fields: title, companyName, companyUrl, location, description, startsAt, endsAt, current.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInProfilePosition
+  - term: LinkedInProfileEducation
+    definition: 'Object declared by the contract with fields: school, degree, field, startsAt, endsAt.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInProfileEducation
+  - term: LinkedInProfile
+    definition: 'Object declared by the contract with fields: socialId, publicIdentifier, profileUrl, firstName, lastName, fullName, headline,
+      summary, location, countryCode, industry, connectionDegree. (9 more)'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInProfile
+  - term: LinkedInProfileResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInProfileResponse
+  - term: LinkedInSearchItem
+    definition: 'Object declared by the contract with fields: socialId, publicIdentifier, profileUrl, fullName, headline, location, industry,
+      profilePictureUrl, connectionDegree.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInSearchItem
+  - term: LinkedInSearchResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInSearchResponse
+  - term: LinkedInPostAuthor
+    definition: 'Object declared by the contract with fields: socialId, name, headline, profileUrl, profilePictureUrl.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInPostAuthor
+  - term: LinkedInPost
+    definition: 'Object declared by the contract with fields: socialId, postUrl, text, publishedAt, reactionCount, commentCount, shareCount, kind,
+      author, mediaUrl.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInPost
+  - term: LinkedInPostsResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInPostsResponse
+  - term: LinkedInReadResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInReadResponse
+  - term: AccountAcuSummary
+    definition: 'Object declared by the contract with fields: included, purchased, used, available, overage.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountAcuSummary
+  - term: AccountCreditSummary
+    definition: 'Object declared by the contract with fields: plan, acu, acu_value_usd.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountCreditSummary
+  - term: ApiKeyBudgetState
+    definition: 'Object declared by the contract with fields: daily_budget_cents, monthly_budget_cents, daily_used_cents, monthly_used_cents,
+      daily_remaining_cents, monthly_remaining_cents, daily_reset_at, monthly_reset_at.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/ApiKeyBudgetState
+  - term: AccountCreditsResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountCreditsResponse
+  - term: AccountUsageResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountUsageResponse
+  - term: AccountKeyRevocationResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountKeyRevocationResponse
+  - term: AccountProfile
+    definition: 'Object declared by the contract with fields: email, first_name, last_name, image_url, linkedin_url, twitter_url, github_url.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountProfile
+  - term: AccountProfileUpdate
+    definition: 'Object declared by the contract with fields: first_name, last_name, image_url, linkedin_url, twitter_url, github_url.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountProfileUpdate
+  - term: AccountProfileResponse
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/AccountProfileResponse
+  - term: EnrichLegacyRequest
+    definition: 'Object declared by the contract with fields: linkedin_url, first_name, last_name, enrichments, response_format.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/EnrichLegacyRequest
+  - term: EnrichContactRequest
+    definition: 'Object declared by the contract with fields: linkedin_url, person_id, email, name, company_domain, first_name, last_name, fields,
+      response_format.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/EnrichContactRequest
+  - term: SyncSearchRequest
+    definition: 'Object declared by the contract with fields: query, type, category, num_results, criteria, async, webhook_url, filters, contents.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SyncSearchRequest
+  - term: SocialsRequest
+    definition: 'Object declared by the contract with fields: platform, identifier.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/SocialsRequest
+  - term: LinkedInSearchFilters
+    definition: 'Object declared by the contract with fields: keywords, location, title, currentCompany, school.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInSearchFilters
+  - term: LinkedInSearchRequest
+    definition: 'Object declared by the contract with fields: filters, limit, cursor.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/LinkedInSearchRequest
+  - term: MonitorTarget
+    definition: 'Object declared by the contract with fields: platform, kind, identifier, events.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorTarget
+  - term: MonitorPlan
+    definition: 'Object declared by the contract with fields: targets, relevance_criteria.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorPlan
+  - term: MonitorOutput
+    definition: 'Object declared by the contract with fields: type, schema, description.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorOutput
+  - term: MonitorCompileRequest
+    definition: 'Object declared by the contract with fields: query, output.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorCompileRequest
+  - term: MonitorCreateRequest
+    definition: 'Object declared by the contract with fields: query, schedule, name, output, plan, webhook_url, max_items_per_run.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorCreateRequest
+  - term: MonitorUpdateRequest
+    definition: 'Object declared by the contract with fields: name, status, query, schedule, output, plan, webhook_url, max_items_per_run.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorUpdateRequest
+  - term: MonitorCompilation
+    definition: 'Object declared by the contract with fields: object, name, plan, output, unresolved.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorCompilation
+  - term: Monitor
+    definition: 'Object declared by the contract with fields: object, id, name, query, status, schedule, targets, relevance_criteria, output,
+      webhook_url, max_items_per_run, baseline_at. (4 more)'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/Monitor
+  - term: MonitorRun
+    definition: 'Object declared by the contract with fields: object, id, monitor_id, trigger, status, candidates, items_emitted, acu_charged,
+      error, started_at, completed_at, created_at.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorRun
+  - term: MonitorItem
+    definition: 'Webhook events: monitor.run.completed, monitor.run.failed, monitor.run.skipped. monitor.run.completed is sent only when a run
+      emits items and carries up to 100 of them.'
+    tags:
+    - Object
+    source: openapi/ploid-openapi.yml#/components/schemas/MonitorItem

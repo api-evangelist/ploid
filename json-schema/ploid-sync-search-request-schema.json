@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/ploid/main/json-schema/ploid-sync-search-request-schema.json",
+  "title": "SyncSearchRequest",
+  "x-generated": "2026-10-07",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/ploid-openapi.yml#/components/schemas/SyncSearchRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "query": {
+      "type": "string",
+      "maxLength": 4000,
+      "default": "",
+      "description": "Optional semantic query. Supply this, at least one structured filter, or both."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "instant",
+        "fast",
+        "auto",
+        "deep"
+      ],
+      "default": "auto",
+      "description": "instant and fast return indexed candidates. auto and deep require evidence-backed matches to the complete query and filters; deep also always runs public-web grounding. Verification may return fewer results within its deadline; Sets supports durable research for larger requests."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "people"
+      ],
+      "default": "people"
+    },
+    "num_results": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000,
+      "default": 10,
+      "description": "Up to 150 return inline. Larger requests run as a background People Set (self-serve up to 500)."
+    },
+    "criteria": {
+      "type": "array",
+      "maxItems": 5,
+      "default": [],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "description": "Plain-English conditions every result must satisfy, such as 'Has founded a venture-backed company'. Each is researched and judged separately; results carry one verification entry per criterion and are ranked by evidence strength across all of them. Requires type auto or deep. In async searches they replace the criteria derived from the query."
+    },
+    "async": {
+      "type": "boolean",
+      "description": "Run as a background People Set and return 202 with set_id. Defaults to true above 150 results; false with a larger num_results is rejected. Async searches always verify each row, so type and contents do not apply."
+    },
+    "webhook_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Async searches only. Receives the Set's progress events."
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "default": {},
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "seniority": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "company": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "industry": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      }
+    },
+    "contents": {
+      "type": "object",
+      "additionalProperties": false,
+      "default": {},
+      "properties": {
+        "fields": {
+          "type": "array",
+          "default": [
+            "linkedin",
+            "title",
+            "company",
+            "location"
+          ],
+          "items": {
+            "type": "string",
+            "enum": [
+              "linkedin",
+              "title",
+              "company",
+              "location",
+              "name"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "query"
+      ],
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    {
+      "required": [
+        "filters"
+      ],
+      "properties": {
+        "filters": {
+          "anyOf": [
+            {
+              "required": [
+                "title"
+              ]
+            },
+            {
+              "required": [
+                "seniority"
+              ]
+            },
+            {
+              "required": [
+                "company"
+              ]
+            },
+            {
+              "required": [
+                "industry"
+              ]
+            },
+            {
+              "required": [
+                "location"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

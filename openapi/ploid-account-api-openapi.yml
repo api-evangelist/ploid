@@ -1,0 +1,622 @@
+openapi: 3.2.0
+info:
+  title: Ploid Account API
+  version: 2.0.0
+  description: 'Operations tagged Account across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.ploid.com
+security:
+- bearerAuth: []
+- apiKeyAuth: []
+tags:
+- name: Account
+paths:
+  /v1/account/credits:
+    get:
+      operationId: getCredits
+      summary: Get account balance and API key budget
+      description: Returns the workspace ACU balance and budget state for the API key used on this request. Requires account:read.
+      tags:
+      - Account
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: Account credit and API-key budget summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountCreditsResponse'
+        '401':
+          description: Missing, invalid, expired, or revoked API credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '402':
+          description: The workspace does not currently have active public-API access, or the requested operation exceeds available ACU or an API-key budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: Missing account:read scope or public-API access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: The organization or API-key per-minute rate limit was exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying.
+              schema:
+                type: integer
+                minimum: 1
+    servers:
+    - url: https://api.ploid.com
+  /v1/account/usage:
+    get:
+      operationId: getAccountUsage
+      summary: Get account usage and active API key context
+      description: Returns workspace ACU usage plus the calling key's ID, budget, and the number of active keys. Requires account:read.
+      tags:
+      - Account
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: Account usage and API-key context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountUsageResponse'
+        '401':
+          description: Missing, invalid, expired, or revoked API credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '402':
+          description: The workspace does not currently have active public-API access, or the requested operation exceeds available ACU or an API-key budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: Missing account:read scope or public-API access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: The organization or API-key per-minute rate limit was exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying.
+              schema:
+                type: integer
+                minimum: 1
+    servers:
+    - url: https://api.ploid.com
+  /v1/account/profile:
+    get:
+      operationId: getAccountProfile
+      summary: Get the signed-in user's profile
+      description: Requires account:read.
+      tags:
+      - Account
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: WorkOS-linked Ploid profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProfileResponse'
+        '401':
+          description: Missing, invalid, expired, or revoked API credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '402':
+          description: The workspace does not currently have active public-API access, or the requested operation exceeds available ACU or an API-key budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: The credential lacks the required scope, its owning user is inactive, or this workspace does not include the requested API capability.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: The organization or API-key per-minute rate limit was exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying.
+              schema:
+                type: integer
+                minimum: 1
+    patch:
+      operationId: updateAccountProfile
+      summary: Update the signed-in user's profile
+      description: Requires account:write.
+      tags:
+      - Account
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountProfileUpdate'
+      responses:
+        '200':
+          description: Updated WorkOS-linked Ploid profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProfileResponse'
+        '401':
+          description: Missing, invalid, expired, or revoked API credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '402':
+          description: The workspace does not currently have active public-API access, or the requested operation exceeds available ACU or an API-key budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: Missing account:write scope or public-API access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '422':
+          description: Invalid profile fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: The organization or API-key per-minute rate limit was exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying.
+              schema:
+                type: integer
+                minimum: 1
+    servers:
+    - url: https://api.ploid.com
+  /v1/account/key:
+    delete:
+      operationId: revokeCurrentApiKey
+      summary: Revoke the API key used for this request
+      description: Immediately revokes the calling API key. A successful response is the final response that key can authorize. Requires account:read.
+      tags:
+      - Account
+      security:
+      - bearerAuth: []
+      - apiKeyAuth: []
+      responses:
+        '200':
+          description: Calling API key revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountKeyRevocationResponse'
+        '401':
+          description: Missing, invalid, expired, or revoked API credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '402':
+          description: The workspace does not currently have active public-API access, or the requested operation exceeds available ACU or an API-key budget.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '403':
+          description: Missing account:read scope or public-API access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+        '429':
+          description: The organization or API-key per-minute rate limit was exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiError'
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying.
+              schema:
+                type: integer
+                minimum: 1
+    servers:
+    - url: https://api.ploid.com
+components:
+  schemas:
+    PublicApiError:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          - request_id
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            request_id:
+              type: string
+            http_status:
+              type: integer
+              minimum: 400
+              maximum: 599
+              description: Semantic status when an error terminates a response after streaming headers opened.
+            retryable:
+              type: boolean
+            unavailable_fields:
+              type: array
+              items:
+                type: string
+                enum:
+                - work_email
+                - personal_email
+                - phone
+                - profile
+                - email
+              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
+            usage:
+              type: object
+              additionalProperties: false
+              required:
+              - acu_used
+              - billed
+              - free
+              - not_found
+              properties:
+                acu_used:
+                  type: number
+                  minimum: 0
+                acu_remaining:
+                  type: number
+                  minimum: 0
+                acu_value_usd:
+                  type: number
+                  const: 0.1
+                billed:
+                  type: array
+                  items:
+                    type: string
+                free:
+                  type: array
+                  items:
+                    type: string
+                not_found:
+                  type: array
+                  items:
+                    type: string
+          additionalProperties: true
+    PublicResponseMeta:
+      type: object
+      additionalProperties: false
+      required:
+      - request_id
+      properties:
+        request_id:
+          type: string
+    ApiKeyBudgetState:
+      type: object
+      additionalProperties: false
+      required:
+      - daily_budget_cents
+      - monthly_budget_cents
+      - daily_used_cents
+      - monthly_used_cents
+      - daily_remaining_cents
+      - monthly_remaining_cents
+      - daily_reset_at
+      - monthly_reset_at
+      properties:
+        daily_budget_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        monthly_budget_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        daily_used_cents:
+          type: integer
+          minimum: 0
+        monthly_used_cents:
+          type: integer
+          minimum: 0
+        daily_remaining_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        monthly_remaining_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        daily_reset_at:
+          type: string
+          format: date-time
+        monthly_reset_at:
+          type: string
+          format: date-time
+    AccountCreditSummary:
+      type: object
+      additionalProperties: false
+      required:
+      - plan
+      - acu
+      - acu_value_usd
+      properties:
+        plan:
+          type: string
+          enum:
+          - FREE
+          - PAYG
+          - API_PRO
+          - STARTER
+          - PRO
+          - SCALE
+          - TEAMS
+        acu:
+          $ref: '#/components/schemas/AccountAcuSummary'
+        acu_value_usd:
+          type: number
+          const: 0.1
+          description: Fixed USD value of one ACU.
+    AccountAcuSummary:
+      type: object
+      additionalProperties: false
+      required:
+      - included
+      - purchased
+      - used
+      - available
+      - overage
+      properties:
+        included:
+          type: number
+        purchased:
+          type: number
+        used:
+          type: number
+        available:
+          type: number
+        overage:
+          type: number
+    AccountKeyRevocationResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - id
+          - revoked
+          properties:
+            id:
+              type: string
+            revoked:
+              type: boolean
+              const: true
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
+    AccountProfileResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/AccountProfile'
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
+    AccountCreditsResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - plan
+          - acu
+          - acu_value_usd
+          - api_key_budget
+          properties:
+            plan:
+              type: string
+              enum:
+              - FREE
+              - PAYG
+              - API_PRO
+              - STARTER
+              - PRO
+              - SCALE
+              - TEAMS
+            acu:
+              $ref: '#/components/schemas/AccountAcuSummary'
+            acu_value_usd:
+              type: number
+              const: 0.1
+            api_key_budget:
+              $ref: '#/components/schemas/ApiKeyBudgetState'
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
+    AccountProfile:
+      type: object
+      additionalProperties: false
+      required:
+      - email
+      - first_name
+      - last_name
+      - image_url
+      - linkedin_url
+      - twitter_url
+      - github_url
+      properties:
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+          maxLength: 80
+        last_name:
+          type: string
+          maxLength: 80
+        image_url:
+          type:
+          - string
+          - 'null'
+        linkedin_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        twitter_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        github_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+    AccountProfileUpdate:
+      type: object
+      additionalProperties: false
+      required:
+      - first_name
+      - last_name
+      - image_url
+      - linkedin_url
+      - twitter_url
+      - github_url
+      properties:
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        last_name:
+          type: string
+          maxLength: 80
+        image_url:
+          type:
+          - string
+          - 'null'
+        linkedin_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        twitter_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        github_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+    AccountUsageResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - credits
+          - api_key
+          properties:
+            credits:
+              $ref: '#/components/schemas/AccountCreditSummary'
+            api_key:
+              type: object
+              additionalProperties: false
+              required:
+              - id
+              - active_keys
+              - budget
+              properties:
+                id:
+                  type: string
+                active_keys:
+                  type: integer
+                  minimum: 1
+                budget:
+                  $ref: '#/components/schemas/ApiKeyBudgetState'
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+x-refined-from:
+- ploid-openapi.json
+- ploid-openapi.yml

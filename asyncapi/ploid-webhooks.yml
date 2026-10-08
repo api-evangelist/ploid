@@ -1,0 +1,19 @@
+generated: '2026-10-07'
+method: derived
+generator: derive-webhooks.py
+source:
+- openapi/ploid-openapi.yml
+description: 'Event surface derived from the provider''s own OpenAPI: enum event. No AsyncAPI document is published by the provider; this catalog
+  lists the events the contract names.'
+management_operations: []
+events:
+- event: post.created
+  declared_in: components/schemas/MonitorItem/properties/event
+- event: engagement.created
+  declared_in: components/schemas/MonitorItem/properties/event
+- event: profile.changed
+  declared_in: components/schemas/MonitorItem/properties/event
+- event: company.changed
+  declared_in: components/schemas/MonitorItem/properties/event
+- event: job.posted
+  declared_in: components/schemas/MonitorItem/properties/event

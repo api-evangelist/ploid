@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/ploid/main/json-schema/ploid-resolve-response-schema.json",
+  "title": "ResolveResponse",
+  "x-generated": "2026-10-07",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/ploid-openapi.yml#/components/schemas/ResolveResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data",
+    "meta"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "found",
+        "person",
+        "confidence",
+        "summary",
+        "sources"
+      ],
+      "properties": {
+        "found": {
+          "type": "boolean"
+        },
+        "person": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "person_id",
+                "name",
+                "headline",
+                "company",
+                "location",
+                "profiles",
+                "identity_verified"
+              ],
+              "properties": {
+                "person_id": {
+                  "type": "string",
+                  "description": "Pass to /v1/person or /v1/enrich as identifier.person_id."
+                },
+                "name": {
+                  "type": "string"
+                },
+                "headline": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "company": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "location": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "profiles": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "Profiles found while resolving. Missing platforms are omitted; more_profiles shows how to look for more.",
+                  "properties": {
+                    "linkedin": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "github": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "x": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                },
+                "identity_verified": {
+                  "type": "boolean",
+                  "const": false
+                }
+              }
+            }
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "summary": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "more_profiles": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Present when found. A ready-to-send /v1/person request that looks for more public profiles.",
+          "required": [
+            "message",
+            "endpoint",
+            "body",
+            "estimated_credits"
+          ],
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string",
+              "const": "POST /v1/person"
+            },
+            "body": {
+              "type": "object",
+              "required": [
+                "identifier"
+              ],
+              "properties": {
+                "identifier": {
+                  "type": "object",
+                  "required": [
+                    "person_id"
+                  ],
+                  "properties": {
+                    "person_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "estimated_credits": {
+              "type": "integer",
+              "const": 25
+            }
+          }
+        }
+      }
+    },
+    "meta": {
+      "$ref": "#/$defs/PublicCreditsResponseMeta"
+    }
+  },
+  "$defs": {
+    "PublicCreditsResponseMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "credits_charged"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string"
+        },
+        "credits_charged": {
+          "type": "number",
+          "minimum": 0
+        },
+        "remaining_credits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+generated: '2026-10-07'
+method: derived
+source: https://ploid.com/documentation/mcp
+sources:
+  - https://ploid.com/documentation/mcp
+  - openapi/ploid-openapi.yml
+purpose: >-
+  Bind each documented Ploid MCP tool to the OpenAPI operation that backs it, so the tool inherits that
+  operation's request schema. The MCP docs table names the backing endpoint for every tool; the live
+  tools/list is OAuth-gated so inputSchemas were not observed.
+surfaces:
+  rest_openapi: openapi/ploid-openapi.yml
+  mcp: https://api.ploid.com/mcp
+  mcp_gated: true
+  graphql: null
+crosswalk:
+  - tool: research_person
+    category: research
+    rest: [getPerson]
+    binding: rest
+    confidence: high
+    note: Docs state "The tool calls POST /v1/person"; inputs linkedin_url or name + company_domain map to PersonRequest.identifier.
+  - tool: get_research_status
+    category: status
+    rest: [getPersonRun]
+    binding: rest
+    confidence: medium
+    note: Person runs (person-<id>) poll GET /v1/person/runs/{id}; Set runs (set-<id>) poll GET /v1/sets/{id}, which is not in the OpenAPI document.
+  - tool: cancel_research
+    category: control
+    rest: [cancelPersonRun]
+    binding: rest
+    confidence: medium
+    note: Person runs cancel via DELETE /v1/person/runs/{id}; Set cancellation is POST /v1/sets/{id}/cancel, not in the OpenAPI document.
+mcp_only:
+  - tool: find_people
+    reason: Creates a People Set via POST /v1/sets, a preview family the docs say is "not in the public OpenAPI document yet".
+  - tool: find_decision_makers
+    reason: Creates a People Set via POST /v1/sets (preview, not in the OpenAPI document).
+rest_only:
+  - getOpenApiDocument
+  - getHarnessContext
+  - createHarnessChatCompletion
+  - syncPeopleSearch
+  - resolvePerson
+  - compileMonitor
+  - createMonitor
+  - listMonitors
+  - getMonitor
+  - updateMonitor
+  - deleteMonitor
+  - runMonitor
+  - listMonitorRuns
+  - getMonitorRun
+  - listMonitorItems
+  - enrichSocialProfile
+  - getLinkedInProfile
+  - searchLinkedInPeople
+  - listLinkedInPosts
+  - listLinkedInProfileComments
+  - getLinkedInCompany
+  - listLinkedInCompanyPosts
+  - enrichPerson
+  - getCredits
+  - getAccountUsage
+  - getAccountProfile
+  - updateAccountProfile
+  - revokeCurrentApiKey
+coverage:
+  mcp_tools_named: 5
+  mcp_bound_to_rest: 3
+  mcp_only: 2
+  rest_operations_total: 31
+  rest_operations_with_mcp_tool: 3

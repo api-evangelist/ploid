@@ -1,0 +1,43 @@
+openapi: 3.2.0
+info:
+  title: Ploid Discovery API
+  version: 2.0.0
+  description: 'Operations tagged Discovery across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.ploid.com
+security:
+- bearerAuth: []
+- apiKeyAuth: []
+tags:
+- name: Discovery
+paths:
+  /v1/openapi.json:
+    get:
+      operationId: getOpenApiDocument
+      summary: Download the public OpenAPI document
+      description: Returns this OpenAPI 3.1 contract. No authentication is required.
+      tags:
+      - Discovery
+      security: []
+      responses:
+        '200':
+          description: Public OpenAPI 3.1 document
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    servers:
+    - url: https://api.ploid.com
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+x-refined-from:
+- ploid-openapi.json
+- ploid-openapi.yml

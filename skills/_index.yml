@@ -1,0 +1,24 @@
+generated: '2026-10-07'
+method: generated
+source: >-
+  Packaged Agent Skills generated from Ploid's OpenAPI 3.1 contract (openapi/ploid-openapi.yml) and the
+  provider's own docs. Every step is grounded in an operationId verified verbatim in the contract;
+  cross-cutting rules cite ../conventions/, ../errors/, ../authentication/ and ../rate-limits/.
+  No provider-published skills or AGENTS.md were found (ploid.com/llms.txt is the provider's agent guidance).
+skills:
+  - file: ploid-research-a-person.md
+    name: Research a person
+    api: openapi/ploid-openapi.yml
+    operations: [resolvePerson, getPerson, getPersonRun, cancelPersonRun]
+  - file: ploid-search-people.md
+    name: Search for people
+    api: openapi/ploid-openapi.yml
+    operations: [syncPeopleSearch, getPerson]
+  - file: ploid-enrich-contact-and-social.md
+    name: Enrich contact and social fields
+    api: openapi/ploid-openapi.yml
+    operations: [enrichPerson, enrichSocialProfile, getLinkedInProfile]
+  - file: ploid-manage-budget-and-key.md
+    name: Watch credits, budgets and the calling key
+    api: openapi/ploid-openapi.yml
+    operations: [getCredits, getAccountUsage, revokeCurrentApiKey]

@@ -1,0 +1,129 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/documentation/api/errors-and-limits
+sources:
+- https://ploid.com/documentation/api
+- https://ploid.com/documentation/api/errors-and-limits
+- https://ploid.com/documentation/api/person
+- https://ploid.com/documentation/api/enrichment
+- https://ploid.com/documentation/api/sets
+- https://ploid.com/documentation/getting-started/authentication
+- openapi/ploid-openapi.yml
+description: Cross-cutting conventions of the Ploid Public API (v1) as documented and as declared in the OpenAPI 3.1 contract.
+base_url: https://api.ploid.com/v1
+api_style: REST over JSON; POST for search/research/enrichment commands, GET for reads and run polling, PATCH/DELETE on monitors and the account
+  key; durable 202 runs for research; streaming (text/event-stream) on the harness chat completion.
+authentication:
+  style: API key as Authorization Bearer or x-api-key header; scoped keys; OAuth 2.1 for the hosted MCP server
+  docs: https://ploid.com/documentation/getting-started/authentication
+  artifact: authentication/ploid-authentication.yml
+idempotency:
+  coverage: partial
+  supported: true
+  mechanism: request header / body token declared in the OpenAPI
+  applies_to: The docs say "Send an Idempotency-Key header on every POST" and the key replays the original response and bills once; the OpenAPI
+    contract declares the header on six of ten POST operations and on none of the PATCH/DELETE operations.
+  scope:
+  - createHarnessChatCompletion
+  - syncPeopleSearch
+  - resolvePerson
+  - getPerson
+  - enrichSocialProfile
+  - enrichPerson
+  not_declared_on:
+  - getHarnessContext
+  - compileMonitor
+  - createMonitor
+  - runMonitor
+  - searchLinkedInPeople
+  - updateMonitor
+  - deleteMonitor
+  - updateAccountProfile
+  - cancelPersonRun
+  - revokeCurrentApiKey
+  retention: not stated
+  conflict_behavior: Reusing the key for different credentials, scopes, route, query, body, content type, or response type returns 409 idempotency_conflict.
+    Validation failures (413 and 422) and 403 insufficient_scope do not consume the key; explicitly retryable provider 5xx and API-key budget
+    denials release it; successful and other deliberate responses (including 402) consume the key and replay exactly.
+  docs: https://ploid.com/documentation/api/errors-and-limits
+  header: Idempotency-Key
+  evidence: Idempotency-Key on 6 of 16 mutating operations
+  verified: derived
+pagination:
+  style: cursor
+  request_params:
+    cursor: opaque cursor (monitors runs/items; People Sets items)
+    limit: page size (People Sets items up to 200)
+    page: LinkedIn profile comments use page and paginationToken
+  response_fields:
+    next_cursor: next page cursor on monitor list responses
+  note: Synchronous search is bounded (num_results, at most 150) rather than paginated.
+field_expansion:
+  supported: true
+  mechanism: Enrichment selects fields with a fields[] array (work_email, personal_email, phone, profile, email); search selects output with contents.fields[].
+metadata:
+  supported: false
+request_tracing:
+  response_field: meta.request_id (success) / error.request_id (errors), prefix req_
+  guidance: Always log request_id and include it when contacting support.
+versioning:
+  scheme: URL path /v1; stable envelopes; see lifecycle/ploid-lifecycle.yml
+error_envelope:
+  shape: '{"error": {"code", "message", "request_id"}}'
+  artifact: errors/ploid-problem-types.yml
+success_envelope:
+  shape: '{"data": ..., "meta": {"request_id": "req_...", "usage": {...}}}'
+async_runs:
+  pattern: POST /v1/person returns 202 with data.run_id, status and poll_url on a cache miss; poll GET /v1/person/runs/{id}; "For a durable 202
+    run, such as a /v1/person cache miss, poll the returned run instead of retrying the POST." People Sets (preview) return 201 with events_url
+    (server-sent events) and items_url.
+rate_limits:
+  signaling: Every 429 includes Retry-After; rate_limited envelope also carries error.retry_after_seconds
+  artifact: rate-limits/ploid-rate-limits.yml
+usage_metering:
+  unit: ACU (credits)
+  response_field: meta.usage {acu_used, billed[], free[], not_found[]} on success, error.usage on errors
+  budgets: per-key daily and monthly budgets; GET /v1/account/usage returns active budget and usage context
+dry_run_mode:
+  coverage: partial
+  note: POST /v1/monitors/compile compiles a monitor plan without creating it (MonitorCompileRequest -> MonitorCompilation); POST /v1/sets returns
+    a pricing estimate before work starts and accepts a budget.credits cap. No general dry-run or test mode exists for search, person or enrichment.
+reversibility:
+  coverage: documented
+  note: 'Research and enrichment are consumption actions metered in ACU; the reversible surfaces are run cancellation, monitor deletion and key
+    revocation. No refund path exists: "Cancellation stops a run but does not refund work already done."'
+  surfaces:
+  - write: getPerson (POST /v1/person, durable run)
+    reversal: cancelPersonRun (DELETE /v1/person/runs/{id})
+    window: '"cancel an active run with DELETE /v1/person/runs/{id}. Run inputs and results are retrievable for seven days, then polling returns
+      410 run_expired."'
+    refund: none ("does not refund work already done")
+    docs: https://ploid.com/documentation/api/person
+    grade: documented
+  - write: People Sets search (POST /v1/sets, preview, not in OpenAPI)
+    reversal: POST /v1/sets/{id}/cancel
+    window: '"Stop a running search. People admitted so far stay in the Set." Cancelled searches return status cancel_requested; admitted people
+      are kept and billed.'
+    docs: https://ploid.com/documentation/api/sets
+    grade: documented
+  - write: createMonitor / updateMonitor
+    reversal: deleteMonitor (DELETE /v1/monitors/{id})
+    window: not stated
+    docs: openapi/ploid-openapi.yml
+    grade: documented
+  - write: revokeCurrentApiKey (DELETE /v1/account/key)
+    reversal: none
+    window: irreversible; "A successful response is the final response it can authorize."
+    docs: https://ploid.com/documentation/getting-started/authentication
+    grade: irreversible
+  - write: syncPeopleSearch, resolvePerson, enrichPerson, enrichSocialProfile
+    reversal: none (synchronous, billed on success; not-found and failures are free)
+    grade: na
+webhooks:
+  supported: false
+  note: No webhooks are documented; People Sets expose server-sent progress events at GET /v1/sets/{id}/events.
+other_conventions:
+- Server-side only; never call the API from public browser code.
+- Retry 429 and transient 5xx with bounded exponential backoff and jitter; do not retry validation errors or missing permissions.
+- Search snippets are discovery leads, not supporting evidence; person records carry field-level provenance (source, source_url, first_seen, last_seen,
+  confidence).

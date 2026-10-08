@@ -1,0 +1,57 @@
+{
+  "provider": "ploid",
+  "sources": [
+    "_original/ploid-openapi.json",
+    "ploid-openapi.yml"
+  ],
+  "outputs": [
+    "ploid-account-api-openapi.yml",
+    "ploid-discovery-api-openapi.yml",
+    "ploid-enrichment-api-openapi.yml",
+    "ploid-harness-api-openapi.yml",
+    "ploid-linkedin-api-openapi.yml",
+    "ploid-monitors-api-openapi.yml",
+    "ploid-people-api-openapi.yml",
+    "ploid-search-api-openapi.yml",
+    "ploid-social-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/ploid-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "ploid-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "ploid-openapi.json: declared missing tag: Account",
+    "ploid-openapi.json: declared missing tag: Discovery",
+    "ploid-openapi.json: declared missing tag: Enrichment",
+    "ploid-openapi.json: declared missing tag: Harness",
+    "ploid-openapi.json: declared missing tag: LinkedIn",
+    "ploid-openapi.json: declared missing tag: Monitors",
+    "ploid-openapi.json: declared missing tag: People",
+    "ploid-openapi.json: declared missing tag: Search",
+    "ploid-openapi.json: declared missing tag: Social",
+    "ploid-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "ploid-openapi.yml: declared missing tag: Account",
+    "ploid-openapi.yml: declared missing tag: Discovery",
+    "ploid-openapi.yml: declared missing tag: Enrichment",
+    "ploid-openapi.yml: declared missing tag: Harness",
+    "ploid-openapi.yml: declared missing tag: LinkedIn",
+    "ploid-openapi.yml: declared missing tag: Monitors",
+    "ploid-openapi.yml: declared missing tag: People",
+    "ploid-openapi.yml: declared missing tag: Search",
+    "ploid-openapi.yml: declared missing tag: Social",
+    "tag 'Account' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'Discovery' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'Enrichment' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'Harness' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'LinkedIn' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'Monitors' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'People' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'Search' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "tag 'Social' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
+    "apis.yml register: written (+9 apis, 10 total)"
+  ],
+  "skipped": []
+}

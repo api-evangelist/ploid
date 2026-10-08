@@ -1,0 +1,103 @@
+generated: '2026-10-07'
+method: searched
+source: https://ploid.com/pricing
+sources:
+- https://ploid.com/pricing
+- https://ploid.com/documentation/api/person
+- https://ploid.com/documentation/api/sets
+- openapi/ploid-openapi.yml
+name: Ploid pricing
+audience: business-product
+pricing_basis: tiered-subscription
+published: true
+currency: USD
+plan_count: 3
+delivery:
+  delivery: managed
+  managed_tier: Growth
+note: Per-workspace subscriptions with pooled monthly credits (ACU) shared across the app, API, MCP and CLI; "Different
+  actions use different amounts of credits, all drawn from the same workspace balance." Included credits refresh
+  monthly and do not roll over. The OpenAPI document states "Start with 50 ACU for 30 days after creating an account",
+  and the docs price person research at 25 ACU per first successful profile and People Sets searches at 1 ACU per
+  10 admitted people. price_text for Growth and Scale is the bare figure as rendered on the plan card ("$200" /
+  "$600"); the card renders "/ month" in a separate span and the page meta description reads "Growth at $200/month
+  with 1,000 credits. Scale at $600/month with 4,000 credits."
+plans:
+- name: Growth
+  description: For teams turning research into their next opportunity.
+  price_text: $200
+  price: 200
+  currency: USD
+  period: month
+  billing: Per workspace, billed monthly
+  included_quota: 1,000 monthly credits
+  overage: Additional credits are $0.20 each on Growth
+  features:
+  - Research Mode
+  - Search & Enrichment
+  - Social Intelligence
+  - Org Charts
+  - Technographics
+  - C-Corp. Incorporations
+  - Funding Announcements
+  limits:
+  - name: Monthly Credits
+    limit_text: 1,000
+    value: 1000
+  - name: Price per Credit
+    limit_text: $0.20
+- name: Scale
+  description: More credits and a lower rate for growing teams.
+  price_text: $600
+  price: 600
+  currency: USD
+  period: month
+  billing: Per workspace, billed monthly
+  included_quota: 4,000 monthly credits
+  overage: Additional credits are $0.15 each on Scale
+  features:
+  - Research Mode
+  - Search & Enrichment
+  - Social Intelligence
+  - Org Charts (coming soon)
+  - Technographics (coming soon)
+  - C-Corp. Incorporations
+  - Funding Announcements
+  limits:
+  - name: Monthly Credits
+    limit_text: 4,000
+    value: 4000
+  - name: Price per Credit
+    limit_text: $0.15
+- name: Custom
+  description: A plan built around your volume, integrations, and requirements.
+  price_text: Custom
+  price: Custom
+  billing: Tailored to your workspace
+  included_quota: Monthly Credits Negotiated
+  features:
+  - Research Mode (by agreement)
+  - Search & Enrichment (by agreement)
+  - Social Intelligence (by agreement)
+  - Org Charts (coming soon)
+  - Technographics (coming soon)
+  - C-Corp. Incorporations (by agreement)
+  - Funding Announcements (by agreement)
+  - SSO / SAML & Audit Logs (by agreement)
+  - Custom SLAs (by agreement)
+  - Exclusive Private Market Data (by agreement)
+  limits:
+  - name: Monthly Credits
+    limit_text: Negotiated
+  - name: Price per Credit
+    limit_text: Custom
+usage_prices:
+- item: Person research (POST /v1/person), first successful profile
+  text: 25 ACU ($2.50 face value) on every plan
+  source: https://ploid.com/documentation/api/person
+- item: People Sets search
+  text: 1 ACU (one credit) per 10 admitted, rounded up
+  source: https://ploid.com/documentation/api/sets
+- item: API trial
+  text: Start with 50 ACU for 30 days after creating an account.
+  source: openapi/ploid-openapi.yml
