@@ -1,0 +1,23 @@
+edges:
+- partner_name: OpenAI
+  partner: openai
+  partner_match: domain
+  type: contract
+  channel: provider-built
+  relationship: compatible
+  direction: provider-built
+  evidence: https://github.com/api-evangelist/ploid/blob/main/openapi/ploid-harness-api-openapi.yml#L103
+  contract_reference:
+    repo: ploid
+    spec_file: ploid-harness-api-openapi.yml
+    property: description
+    value: OpenAI-compatible
+    note: 'ploid declares OpenAI compatibility: ''description: OpenAI-compatible chat-completion transport with
+      Ploid-owned model routing. Requests are capped at 128 KB, 100 messages, 32 tools, 4,096 output tok'''
+    detected_by: sweep-model-routing.py
+    detected: '2026-10-13'
+  detected_by: sweep-model-routing.py
+  first_seen: '2026-10-13'
+generated: '2026-10-13'
+method: searched
+checked: []
