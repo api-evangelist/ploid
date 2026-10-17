@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Ploid Enrichment API
+  title: Ploid Public Enrichment API
   version: 2.0.0
-  description: 'Operations tagged Enrichment across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: Ploid's focused agent-native people API. Start with 50 ACU for 30 days after creating an account.
 servers:
 - url: https://api.ploid.com
 security:
@@ -105,10 +105,193 @@ paths:
               schema:
                 type: integer
                 minimum: 1
-    servers:
-    - url: https://api.ploid.com
 components:
   schemas:
+    EnrichResponse:
+      oneOf:
+      - $ref: '#/components/schemas/EnrichLegacyResponse'
+      - $ref: '#/components/schemas/EnrichContactResponse'
+    EnrichContactRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - fields
+      properties:
+        linkedin_url:
+          type: string
+          format: uri
+          pattern: ^https?://(?:[^/]+\.)?linkedin\.com/in/[^/?#]+/?(?:[?#].*)?$
+        person_id:
+          type: string
+          description: Permanent Ploid person id.
+        email:
+          type: string
+          format: email
+          description: Reverse contact lookup anchor.
+        name:
+          type: string
+        company_domain:
+          type: string
+          pattern: ^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}$
+        first_name:
+          type: string
+        last_name:
+          type: string
+        fields:
+          type: array
+          minItems: 1
+          maxItems: 3
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - work_email
+            - personal_email
+            - phone
+        response_format:
+          const: standard
+      oneOf:
+      - required:
+        - linkedin_url
+      - required:
+        - person_id
+      - required:
+        - email
+      - required:
+        - name
+        - company_domain
+    EnrichLegacyResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          properties:
+            linkedin_profile:
+              oneOf:
+              - $ref: '#/components/schemas/EnrichLinkedInProfile'
+              - type: 'null'
+            email:
+              oneOf:
+              - $ref: '#/components/schemas/EnrichContact'
+              - type: 'null'
+            phone:
+              oneOf:
+              - $ref: '#/components/schemas/EnrichContact'
+              - type: 'null'
+          description: Only requested enrichment fields are present; an unavailable field is null.
+        meta:
+          type: object
+          additionalProperties: false
+          required:
+          - request_id
+          - acu_used
+          - acu_remaining
+          - acu_value_usd
+          - warnings
+          properties:
+            request_id:
+              type: string
+            acu_used:
+              type: number
+              minimum: 0
+            acu_remaining:
+              type:
+              - number
+              - 'null'
+              minimum: 0
+            acu_value_usd:
+              type: number
+              const: 0.1
+            warnings:
+              type: array
+              items:
+                type: string
+    EnrichFieldResult:
+      type: object
+      additionalProperties: false
+      required:
+      - value
+      - status
+      - confidence
+      - source
+      - last_seen
+      properties:
+        value:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+          enum:
+          - found
+          - not_found
+          - unavailable
+        confidence:
+          type:
+          - string
+          - 'null'
+          enum:
+          - guess
+          - strong
+          - verified
+          - null
+        source:
+          type:
+          - string
+          - 'null'
+          enum:
+          - contact_network
+          - linked_profile
+          - public_code
+          - public_web
+          - null
+        last_seen:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    EnrichRequest:
+      oneOf:
+      - $ref: '#/components/schemas/EnrichLegacyRequest'
+      - $ref: '#/components/schemas/EnrichContactRequest'
+    EnrichLegacyRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - linkedin_url
+      properties:
+        linkedin_url:
+          type: string
+          format: uri
+          pattern: ^https?://(?:[^/]+\.)?linkedin\.com/in/[^/?#]+/?(?:[?#].*)?$
+        first_name:
+          type: string
+        last_name:
+          type: string
+        enrichments:
+          type: array
+          minItems: 1
+          maxItems: 3
+          default:
+          - profile
+          items:
+            type: string
+            enum:
+            - profile
+            - linkedin_profile
+            - email
+            - phone
+        response_format:
+          type: string
+          enum:
+          - standard
+          - markdown
+          default: standard
     PublicApiError:
       type: object
       additionalProperties: false
@@ -177,10 +360,93 @@ components:
                   items:
                     type: string
           additionalProperties: true
-    EnrichResponse:
-      oneOf:
-      - $ref: '#/components/schemas/EnrichLegacyResponse'
-      - $ref: '#/components/schemas/EnrichContactResponse'
+    EnrichLinkedInProfile:
+      type: object
+      additionalProperties: false
+      required:
+      - linkedin_url
+      - name
+      - headline
+      - company
+      - location
+      - photo_url
+      - skills
+      - companies
+      - schools
+      - total_years_experience
+      - open_to_work
+      - follower_count
+      - verification_status
+      properties:
+        linkedin_url:
+          type: string
+          format: uri
+        name:
+          type: string
+        headline:
+          type:
+          - string
+          - 'null'
+        company:
+          type:
+          - string
+          - 'null'
+        location:
+          type:
+          - string
+          - 'null'
+        photo_url:
+          type:
+          - string
+          - 'null'
+        skills:
+          type: array
+          items:
+            type: string
+        companies:
+          type: array
+          items:
+            type: string
+        schools:
+          type: array
+          items:
+            type: string
+        total_years_experience:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+        open_to_work:
+          type: boolean
+        follower_count:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+        verification_status:
+          type: string
+          const: refreshed
+    EnrichContact:
+      type: object
+      additionalProperties: false
+      required:
+      - value
+      - confidence
+      - verification_status
+      properties:
+        value:
+          type: string
+        confidence:
+          type: string
+          enum:
+          - guess
+          - strong
+          - verified
+        verification_status:
+          type: string
+          enum:
+          - matched
+          - verified
     EnrichContactResponse:
       type: object
       additionalProperties: false
@@ -255,274 +521,6 @@ components:
                     - work_email
                     - personal_email
                     - phone
-    EnrichContactRequest:
-      type: object
-      additionalProperties: false
-      required:
-      - fields
-      properties:
-        linkedin_url:
-          type: string
-          format: uri
-          pattern: ^https?://(?:[^/]+\.)?linkedin\.com/in/[^/?#]+/?(?:[?#].*)?$
-        person_id:
-          type: string
-          description: Permanent Ploid person id.
-        email:
-          type: string
-          format: email
-          description: Reverse contact lookup anchor.
-        name:
-          type: string
-        company_domain:
-          type: string
-          pattern: ^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}$
-        first_name:
-          type: string
-        last_name:
-          type: string
-        fields:
-          type: array
-          minItems: 1
-          maxItems: 3
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-            - work_email
-            - personal_email
-            - phone
-        response_format:
-          const: standard
-      oneOf:
-      - required:
-        - linkedin_url
-      - required:
-        - person_id
-      - required:
-        - email
-      - required:
-        - name
-        - company_domain
-    EnrichContact:
-      type: object
-      additionalProperties: false
-      required:
-      - value
-      - confidence
-      - verification_status
-      properties:
-        value:
-          type: string
-        confidence:
-          type: string
-          enum:
-          - guess
-          - strong
-          - verified
-        verification_status:
-          type: string
-          enum:
-          - matched
-          - verified
-    EnrichFieldResult:
-      type: object
-      additionalProperties: false
-      required:
-      - value
-      - status
-      - confidence
-      - source
-      - last_seen
-      properties:
-        value:
-          type:
-          - string
-          - 'null'
-        status:
-          type: string
-          enum:
-          - found
-          - not_found
-          - unavailable
-        confidence:
-          type:
-          - string
-          - 'null'
-          enum:
-          - guess
-          - strong
-          - verified
-          - null
-        source:
-          type:
-          - string
-          - 'null'
-          enum:
-          - contact_network
-          - linked_profile
-          - public_code
-          - public_web
-          - null
-        last_seen:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    EnrichRequest:
-      oneOf:
-      - $ref: '#/components/schemas/EnrichLegacyRequest'
-      - $ref: '#/components/schemas/EnrichContactRequest'
-    EnrichLegacyResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          type: object
-          additionalProperties: false
-          properties:
-            linkedin_profile:
-              oneOf:
-              - $ref: '#/components/schemas/EnrichLinkedInProfile'
-              - type: 'null'
-            email:
-              oneOf:
-              - $ref: '#/components/schemas/EnrichContact'
-              - type: 'null'
-            phone:
-              oneOf:
-              - $ref: '#/components/schemas/EnrichContact'
-              - type: 'null'
-          description: Only requested enrichment fields are present; an unavailable field is null.
-        meta:
-          type: object
-          additionalProperties: false
-          required:
-          - request_id
-          - acu_used
-          - acu_remaining
-          - acu_value_usd
-          - warnings
-          properties:
-            request_id:
-              type: string
-            acu_used:
-              type: number
-              minimum: 0
-            acu_remaining:
-              type:
-              - number
-              - 'null'
-              minimum: 0
-            acu_value_usd:
-              type: number
-              const: 0.1
-            warnings:
-              type: array
-              items:
-                type: string
-    EnrichLegacyRequest:
-      type: object
-      additionalProperties: false
-      required:
-      - linkedin_url
-      properties:
-        linkedin_url:
-          type: string
-          format: uri
-          pattern: ^https?://(?:[^/]+\.)?linkedin\.com/in/[^/?#]+/?(?:[?#].*)?$
-        first_name:
-          type: string
-        last_name:
-          type: string
-        enrichments:
-          type: array
-          minItems: 1
-          maxItems: 3
-          default:
-          - profile
-          items:
-            type: string
-            enum:
-            - profile
-            - linkedin_profile
-            - email
-            - phone
-        response_format:
-          type: string
-          enum:
-          - standard
-          - markdown
-          default: standard
-    EnrichLinkedInProfile:
-      type: object
-      additionalProperties: false
-      required:
-      - linkedin_url
-      - name
-      - headline
-      - company
-      - location
-      - photo_url
-      - skills
-      - companies
-      - schools
-      - total_years_experience
-      - open_to_work
-      - follower_count
-      - verification_status
-      properties:
-        linkedin_url:
-          type: string
-          format: uri
-        name:
-          type: string
-        headline:
-          type:
-          - string
-          - 'null'
-        company:
-          type:
-          - string
-          - 'null'
-        location:
-          type:
-          - string
-          - 'null'
-        photo_url:
-          type:
-          - string
-          - 'null'
-        skills:
-          type: array
-          items:
-            type: string
-        companies:
-          type: array
-          items:
-            type: string
-        schools:
-          type: array
-          items:
-            type: string
-        total_years_experience:
-          type:
-          - number
-          - 'null'
-          minimum: 0
-        open_to_work:
-          type: boolean
-        follower_count:
-          type:
-          - number
-          - 'null'
-          minimum: 0
-        verification_status:
-          type: string
-          const: refreshed
   securitySchemes:
     bearerAuth:
       type: http
@@ -531,6 +529,3 @@ components:
       type: apiKey
       in: header
       name: x-api-key
-x-refined-from:
-- ploid-openapi.json
-- ploid-openapi.yml

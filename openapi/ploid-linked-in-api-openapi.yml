@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Ploid LinkedIn API
+  title: Ploid Public LinkedIn API
   version: 2.0.0
-  description: 'Operations tagged LinkedIn across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: Ploid's focused agent-native people API. Start with 50 ACU for 30 days after creating an account.
 servers:
 - url: https://api.ploid.com
 security:
@@ -89,8 +89,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
   /v1/linkedin/search:
     post:
       operationId: searchLinkedInPeople
@@ -156,8 +154,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
   /v1/linkedin/posts:
     get:
       operationId: listLinkedInPosts
@@ -244,8 +240,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
   /v1/linkedin/profiles/comments:
     get:
       operationId: listLinkedInProfileComments
@@ -331,8 +325,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
   /v1/linkedin/companies/get:
     get:
       operationId: getLinkedInCompany
@@ -408,8 +400,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
   /v1/linkedin/companies/posts:
     get:
       operationId: listLinkedInCompanyPosts
@@ -505,78 +495,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
 components:
   schemas:
-    PublicApiError:
+    LinkedInPostsResponse:
       type: object
       additionalProperties: false
       required:
-      - error
+      - data
+      - meta
       properties:
-        error:
+        data:
           type: object
+          additionalProperties: false
           required:
-          - code
-          - message
-          - request_id
+          - items
+          - cursor
           properties:
-            code:
-              type: string
-            message:
-              type: string
-            request_id:
-              type: string
-            http_status:
-              type: integer
-              minimum: 400
-              maximum: 599
-              description: Semantic status when an error terminates a response after streaming headers opened.
-            retryable:
-              type: boolean
-            unavailable_fields:
+            items:
               type: array
               items:
-                type: string
-                enum:
-                - work_email
-                - personal_email
-                - phone
-                - profile
-                - email
-              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
-            usage:
-              type: object
-              additionalProperties: false
-              required:
-              - acu_used
-              - billed
-              - free
-              - not_found
-              properties:
-                acu_used:
-                  type: number
-                  minimum: 0
-                acu_remaining:
-                  type: number
-                  minimum: 0
-                acu_value_usd:
-                  type: number
-                  const: 0.1
-                billed:
-                  type: array
-                  items:
-                    type: string
-                free:
-                  type: array
-                  items:
-                    type: string
-                not_found:
-                  type: array
-                  items:
-                    type: string
-          additionalProperties: true
+                $ref: '#/components/schemas/LinkedInPost'
+            cursor:
+              type:
+              - string
+              - 'null'
+        meta:
+          $ref: '#/components/schemas/PublicCreditsResponseMeta'
     PublicCreditsResponseMeta:
       type: object
       additionalProperties: false
@@ -628,6 +572,109 @@ components:
               minimum: 0
         meta:
           $ref: '#/components/schemas/PublicCreditsResponseMeta'
+    LinkedInSearchItem:
+      type: object
+      additionalProperties: false
+      required:
+      - socialId
+      - publicIdentifier
+      - profileUrl
+      - fullName
+      - headline
+      - location
+      - industry
+      - profilePictureUrl
+      - connectionDegree
+      properties:
+        socialId:
+          type:
+          - string
+          - 'null'
+        publicIdentifier:
+          type:
+          - string
+          - 'null'
+        profileUrl:
+          type:
+          - string
+          - 'null'
+        fullName:
+          type: string
+        headline:
+          type:
+          - string
+          - 'null'
+        location:
+          type:
+          - string
+          - 'null'
+        industry:
+          type:
+          - string
+          - 'null'
+        profilePictureUrl:
+          type:
+          - string
+          - 'null'
+        connectionDegree:
+          oneOf:
+          - type: integer
+            enum:
+            - 1
+            - 2
+            - 3
+          - type: 'null'
+    LinkedInPost:
+      type: object
+      additionalProperties: false
+      required:
+      - socialId
+      - postUrl
+      - text
+      - publishedAt
+      - reactionCount
+      - commentCount
+      - shareCount
+      - kind
+      - author
+      - mediaUrl
+      properties:
+        socialId:
+          type: string
+        postUrl:
+          type:
+          - string
+          - 'null'
+        text:
+          type:
+          - string
+          - 'null'
+        publishedAt:
+          type:
+          - string
+          - 'null'
+        reactionCount:
+          type: number
+          minimum: 0
+        commentCount:
+          type: number
+          minimum: 0
+        shareCount:
+          type: number
+          minimum: 0
+        kind:
+          type: string
+          enum:
+          - post
+          - share
+          - article
+          - unknown
+        author:
+          $ref: '#/components/schemas/LinkedInPostAuthor'
+        mediaUrl:
+          type:
+          - string
+          - 'null'
     LinkedInProfile:
       type: object
       additionalProperties: false
@@ -738,47 +785,21 @@ components:
           type: boolean
         isPremium:
           type: boolean
-    LinkedInPostAuthor:
+    LinkedInSearchRequest:
       type: object
       additionalProperties: false
-      required:
-      - socialId
-      - name
-      - headline
-      - profileUrl
-      - profilePictureUrl
       properties:
-        socialId:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        headline:
-          type:
-          - string
-          - 'null'
-        profileUrl:
-          type:
-          - string
-          - 'null'
-        profilePictureUrl:
-          type:
-          - string
-          - 'null'
-    LinkedInProfileResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          $ref: '#/components/schemas/LinkedInProfile'
-        meta:
-          $ref: '#/components/schemas/PublicCreditsResponseMeta'
+        filters:
+          $ref: '#/components/schemas/LinkedInSearchFilters'
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+        cursor:
+          type: string
+          maxLength: 1000
+          description: Pagination cursor from a previous response.
     LinkedInSearchFilters:
       type: object
       additionalProperties: false
@@ -794,6 +815,19 @@ components:
           $ref: '#/components/schemas/LinkedInSearchFilterValue'
         school:
           $ref: '#/components/schemas/LinkedInSearchFilterValue'
+    LinkedInSearchFilterValue:
+      oneOf:
+      - type: string
+        minLength: 1
+        maxLength: 200
+      - type: array
+        minItems: 1
+        maxItems: 10
+        items:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description: Items joined with spaces must total at most 200 characters.
     LinkedInProfileEducation:
       type: object
       additionalProperties: false
@@ -824,133 +858,104 @@ components:
           type:
           - string
           - 'null'
-    LinkedInPost:
+    PublicApiError:
       type: object
       additionalProperties: false
       required:
-      - socialId
-      - postUrl
-      - text
-      - publishedAt
-      - reactionCount
-      - commentCount
-      - shareCount
-      - kind
-      - author
-      - mediaUrl
+      - error
       properties:
-        socialId:
-          type: string
-        postUrl:
-          type:
-          - string
-          - 'null'
-        text:
-          type:
-          - string
-          - 'null'
-        publishedAt:
-          type:
-          - string
-          - 'null'
-        reactionCount:
-          type: number
-          minimum: 0
-        commentCount:
-          type: number
-          minimum: 0
-        shareCount:
-          type: number
-          minimum: 0
-        kind:
-          type: string
-          enum:
-          - post
-          - share
-          - article
-          - unknown
-        author:
-          $ref: '#/components/schemas/LinkedInPostAuthor'
-        mediaUrl:
-          type:
-          - string
-          - 'null'
-    LinkedInReadResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          description: Provider-neutral LinkedIn data. Fields vary by the selected read operation and internal credentials and status fields are removed.
-          oneOf:
-          - type: object
-            additionalProperties: true
-          - type: array
-            items: {}
-          - type: string
-          - type: number
-          - type: boolean
-          - type: 'null'
-        meta:
-          $ref: '#/components/schemas/PublicCreditsResponseMeta'
-    LinkedInSearchFilterValue:
-      oneOf:
-      - type: string
-        minLength: 1
-        maxLength: 200
-      - type: array
-        minItems: 1
-        maxItems: 10
-        items:
-          type: string
-          minLength: 1
-          maxLength: 200
-        description: Items joined with spaces must total at most 200 characters.
-    LinkedInPostsResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
+        error:
           type: object
-          additionalProperties: false
           required:
-          - items
-          - cursor
+          - code
+          - message
+          - request_id
           properties:
-            items:
+            code:
+              type: string
+            message:
+              type: string
+            request_id:
+              type: string
+            http_status:
+              type: integer
+              minimum: 400
+              maximum: 599
+              description: Semantic status when an error terminates a response after streaming headers opened.
+            retryable:
+              type: boolean
+            unavailable_fields:
               type: array
               items:
-                $ref: '#/components/schemas/LinkedInPost'
-            cursor:
-              type:
-              - string
-              - 'null'
+                type: string
+                enum:
+                - work_email
+                - personal_email
+                - phone
+                - profile
+                - email
+              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
+            usage:
+              type: object
+              additionalProperties: false
+              required:
+              - acu_used
+              - billed
+              - free
+              - not_found
+              properties:
+                acu_used:
+                  type: number
+                  minimum: 0
+                acu_remaining:
+                  type: number
+                  minimum: 0
+                acu_value_usd:
+                  type: number
+                  const: 0.1
+                billed:
+                  type: array
+                  items:
+                    type: string
+                free:
+                  type: array
+                  items:
+                    type: string
+                not_found:
+                  type: array
+                  items:
+                    type: string
+          additionalProperties: true
+    LinkedInProfileResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/LinkedInProfile'
         meta:
           $ref: '#/components/schemas/PublicCreditsResponseMeta'
-    LinkedInSearchItem:
+    LinkedInPostAuthor:
       type: object
       additionalProperties: false
       required:
       - socialId
-      - publicIdentifier
-      - profileUrl
-      - fullName
+      - name
       - headline
-      - location
-      - industry
+      - profileUrl
       - profilePictureUrl
-      - connectionDegree
       properties:
         socialId:
           type:
           - string
           - 'null'
-        publicIdentifier:
+        name:
+          type:
+          - string
+          - 'null'
+        headline:
           type:
           - string
           - 'null'
@@ -958,47 +963,10 @@ components:
           type:
           - string
           - 'null'
-        fullName:
-          type: string
-        headline:
-          type:
-          - string
-          - 'null'
-        location:
-          type:
-          - string
-          - 'null'
-        industry:
-          type:
-          - string
-          - 'null'
         profilePictureUrl:
           type:
           - string
           - 'null'
-        connectionDegree:
-          oneOf:
-          - type: integer
-            enum:
-            - 1
-            - 2
-            - 3
-          - type: 'null'
-    LinkedInSearchRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        filters:
-          $ref: '#/components/schemas/LinkedInSearchFilters'
-        limit:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 25
-        cursor:
-          type: string
-          maxLength: 1000
-          description: Pagination cursor from a previous response.
     LinkedInProfilePosition:
       type: object
       additionalProperties: false
@@ -1042,6 +1010,26 @@ components:
           - 'null'
         current:
           type: boolean
+    LinkedInReadResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          description: Provider-neutral LinkedIn data. Fields vary by the selected read operation and internal credentials and status fields are removed.
+          oneOf:
+          - type: object
+            additionalProperties: true
+          - type: array
+            items: {}
+          - type: string
+          - type: number
+          - type: boolean
+          - type: 'null'
+        meta:
+          $ref: '#/components/schemas/PublicCreditsResponseMeta'
   securitySchemes:
     bearerAuth:
       type: http
@@ -1050,6 +1038,3 @@ components:
       type: apiKey
       in: header
       name: x-api-key
-x-refined-from:
-- ploid-openapi.json
-- ploid-openapi.yml

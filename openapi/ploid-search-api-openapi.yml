@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Ploid Search API
+  title: Ploid Public Search API
   version: 2.0.0
-  description: 'Operations tagged Search across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: Ploid's focused agent-native people API. Start with 50 ACU for 30 days after creating an account.
 servers:
 - url: https://api.ploid.com
 security:
@@ -96,8 +96,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
   /v1/resolve:
     post:
       operationId: resolvePerson
@@ -171,78 +169,120 @@ paths:
               schema:
                 type: integer
                 minimum: 1
-    servers:
-    - url: https://api.ploid.com
 components:
   schemas:
-    PublicApiError:
+    SyncSearchRequest:
       type: object
       additionalProperties: false
-      required:
-      - error
       properties:
-        error:
+        query:
+          type: string
+          maxLength: 4000
+          default: ''
+          description: Optional semantic query. Supply this, at least one structured filter, or both.
+        type:
+          type: string
+          enum:
+          - instant
+          - fast
+          - auto
+          - deep
+          default: auto
+          description: instant and fast return indexed candidates. auto and deep require evidence-backed matches to the complete query and filters; deep also always runs public-web grounding. Verification may return fewer results within its deadline; Sets supports durable research for larger requests.
+        category:
+          type: string
+          enum:
+          - people
+          default: people
+        num_results:
+          type: integer
+          minimum: 1
+          maximum: 5000
+          default: 10
+          description: Up to 150 return inline. Larger requests run as a background People Set (self-serve up to 500).
+        criteria:
+          type: array
+          maxItems: 5
+          default: []
+          items:
+            type: string
+            minLength: 1
+            maxLength: 500
+          description: Plain-English conditions every result must satisfy, such as 'Has founded a venture-backed company'. Each is researched and judged separately; results carry one verification entry per criterion and are ranked by evidence strength across all of them. Requires type auto or deep. In async searches they replace the criteria derived from the query.
+        async:
+          type: boolean
+          description: Run as a background People Set and return 202 with set_id. Defaults to true above 150 results; false with a larger num_results is rejected. Async searches always verify each row, so type and contents do not apply.
+        webhook_url:
+          type: string
+          format: uri
+          description: Async searches only. Receives the Set's progress events.
+        filters:
           type: object
-          required:
-          - code
-          - message
-          - request_id
+          additionalProperties: false
+          default: {}
           properties:
-            code:
+            title:
               type: string
-            message:
+              minLength: 1
+              maxLength: 200
+            seniority:
               type: string
-            request_id:
+              minLength: 1
+              maxLength: 80
+            company:
               type: string
-            http_status:
-              type: integer
-              minimum: 400
-              maximum: 599
-              description: Semantic status when an error terminates a response after streaming headers opened.
-            retryable:
-              type: boolean
-            unavailable_fields:
+              minLength: 1
+              maxLength: 200
+            industry:
+              type: string
+              minLength: 1
+              maxLength: 200
+            location:
+              type: string
+              minLength: 1
+              maxLength: 200
+        contents:
+          type: object
+          additionalProperties: false
+          default: {}
+          properties:
+            fields:
               type: array
+              default:
+              - linkedin
+              - title
+              - company
+              - location
               items:
                 type: string
                 enum:
-                - work_email
-                - personal_email
-                - phone
-                - profile
-                - email
-              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
-            usage:
-              type: object
-              additionalProperties: false
-              required:
-              - acu_used
-              - billed
-              - free
-              - not_found
-              properties:
-                acu_used:
-                  type: number
-                  minimum: 0
-                acu_remaining:
-                  type: number
-                  minimum: 0
-                acu_value_usd:
-                  type: number
-                  const: 0.1
-                billed:
-                  type: array
-                  items:
-                    type: string
-                free:
-                  type: array
-                  items:
-                    type: string
-                not_found:
-                  type: array
-                  items:
-                    type: string
-          additionalProperties: true
+                - linkedin
+                - title
+                - company
+                - location
+                - name
+      anyOf:
+      - required:
+        - query
+        properties:
+          query:
+            type: string
+            minLength: 1
+      - required:
+        - filters
+        properties:
+          filters:
+            anyOf:
+            - required:
+              - title
+            - required:
+              - seniority
+            - required:
+              - company
+            - required:
+              - industry
+            - required:
+              - location
     PublicCreditsResponseMeta:
       type: object
       additionalProperties: false
@@ -264,67 +304,115 @@ components:
           - 'null'
         message:
           type: string
-    SyncSearchGroundingResult:
+    ResolveResponse:
       type: object
       additionalProperties: false
       required:
-      - url
-      - title
-      - snippet
-      - source
-      - observed_at
-      - person
+      - data
+      - meta
       properties:
-        url:
-          type: string
-          format: uri
-        title:
-          type: string
-        snippet:
-          type:
-          - string
-          - 'null'
-        source:
-          type: string
-        observed_at:
-          type: string
-          format: date-time
-        person:
+        data:
           type: object
           additionalProperties: false
           required:
-          - name
-          - title
-          - company
-          - location
-          - linkedin_url
-          - identity_verified
-          - resolution_source
+          - found
+          - person
+          - confidence
+          - summary
+          - sources
           properties:
-            name:
-              type: string
-            title:
-              type:
-              - string
-              - 'null'
-            company:
-              type:
-              - string
-              - 'null'
-            location:
-              type:
-              - string
-              - 'null'
-            linkedin_url:
-              type:
-              - string
-              - 'null'
-            identity_verified:
+            found:
               type: boolean
-              const: false
-            resolution_source:
+            person:
+              oneOf:
+              - type: 'null'
+              - type: object
+                additionalProperties: false
+                required:
+                - person_id
+                - name
+                - headline
+                - company
+                - location
+                - profiles
+                - identity_verified
+                properties:
+                  person_id:
+                    type: string
+                    description: Pass to /v1/person or /v1/enrich as identifier.person_id.
+                  name:
+                    type: string
+                  headline:
+                    type:
+                    - string
+                    - 'null'
+                  company:
+                    type:
+                    - string
+                    - 'null'
+                  location:
+                    type:
+                    - string
+                    - 'null'
+                  profiles:
+                    type: object
+                    additionalProperties: false
+                    description: Profiles found while resolving. Missing platforms are omitted; more_profiles shows how to look for more.
+                    properties:
+                      linkedin:
+                        type: string
+                        format: uri
+                      github:
+                        type: string
+                        format: uri
+                      x:
+                        type: string
+                        format: uri
+                  identity_verified:
+                    type: boolean
+                    const: false
+            confidence:
+              type: number
+              minimum: 0
+              maximum: 1
+            summary:
               type: string
-              const: public_web
+            sources:
+              type: array
+              items:
+                type: string
+            more_profiles:
+              type: object
+              additionalProperties: false
+              description: Present when found. A ready-to-send /v1/person request that looks for more public profiles.
+              required:
+              - message
+              - endpoint
+              - body
+              - estimated_credits
+              properties:
+                message:
+                  type: string
+                endpoint:
+                  type: string
+                  const: POST /v1/person
+                body:
+                  type: object
+                  required:
+                  - identifier
+                  properties:
+                    identifier:
+                      type: object
+                      required:
+                      - person_id
+                      properties:
+                        person_id:
+                          type: string
+                estimated_credits:
+                  type: integer
+                  const: 25
+        meta:
+          $ref: '#/components/schemas/PublicCreditsResponseMeta'
     SyncSearchResponse:
       type: object
       additionalProperties: false
@@ -443,175 +531,6 @@ components:
                     type: string
         meta:
           $ref: '#/components/schemas/PublicCreditsResponseMeta'
-    ResolveResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          type: object
-          additionalProperties: false
-          required:
-          - found
-          - person
-          - confidence
-          - summary
-          - sources
-          properties:
-            found:
-              type: boolean
-            person:
-              oneOf:
-              - type: 'null'
-              - type: object
-                additionalProperties: false
-                required:
-                - person_id
-                - name
-                - headline
-                - company
-                - location
-                - profiles
-                - identity_verified
-                properties:
-                  person_id:
-                    type: string
-                    description: Pass to /v1/person or /v1/enrich as identifier.person_id.
-                  name:
-                    type: string
-                  headline:
-                    type:
-                    - string
-                    - 'null'
-                  company:
-                    type:
-                    - string
-                    - 'null'
-                  location:
-                    type:
-                    - string
-                    - 'null'
-                  profiles:
-                    type: object
-                    additionalProperties: false
-                    description: Profiles found while resolving. Missing platforms are omitted; more_profiles shows how to look for more.
-                    properties:
-                      linkedin:
-                        type: string
-                        format: uri
-                      github:
-                        type: string
-                        format: uri
-                      x:
-                        type: string
-                        format: uri
-                  identity_verified:
-                    type: boolean
-                    const: false
-            confidence:
-              type: number
-              minimum: 0
-              maximum: 1
-            summary:
-              type: string
-            sources:
-              type: array
-              items:
-                type: string
-            more_profiles:
-              type: object
-              additionalProperties: false
-              description: Present when found. A ready-to-send /v1/person request that looks for more public profiles.
-              required:
-              - message
-              - endpoint
-              - body
-              - estimated_credits
-              properties:
-                message:
-                  type: string
-                endpoint:
-                  type: string
-                  const: POST /v1/person
-                body:
-                  type: object
-                  required:
-                  - identifier
-                  properties:
-                    identifier:
-                      type: object
-                      required:
-                      - person_id
-                      properties:
-                        person_id:
-                          type: string
-                estimated_credits:
-                  type: integer
-                  const: 25
-        meta:
-          $ref: '#/components/schemas/PublicCreditsResponseMeta'
-    ResolveRequest:
-      type: object
-      additionalProperties: false
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          minLength: 2
-          maxLength: 200
-          description: Full name; a partial or misspelled surname is tolerated.
-        company:
-          type: string
-          minLength: 1
-          maxLength: 200
-          description: Company name or web domain, such as Acme or acme.com.
-        role:
-          type: string
-          minLength: 1
-          maxLength: 300
-          description: Job title or role.
-        location:
-          type: string
-          minLength: 1
-          maxLength: 200
-          description: City, region, or country.
-        address:
-          type: string
-          minLength: 3
-          maxLength: 300
-          description: Street or mailing address; it only has to fit the person's area.
-        work_email:
-          type: string
-          format: email
-          maxLength: 254
-          description: Work email. Its domain identifies the employer unless it is a free mailbox provider.
-        personal_email:
-          type: string
-          format: email
-          maxLength: 254
-        phone:
-          type: string
-          maxLength: 40
-          pattern: ^\+?[\d\s().-]+$
-          description: Phone number with 7 to 15 digits, in any common format.
-      anyOf:
-      - required:
-        - company
-      - required:
-        - role
-      - required:
-        - location
-      - required:
-        - address
-      - required:
-        - work_email
-      - required:
-        - personal_email
-      - required:
-        - phone
     SyncSearchPerson:
       type: object
       additionalProperties: false
@@ -670,6 +589,135 @@ components:
           - ploid_people_index
           - public_web
       description: Only resolved people are returned. Requested profile fields are present when selected and may be null when the people index has no value.
+    SyncSearchGroundingResult:
+      type: object
+      additionalProperties: false
+      required:
+      - url
+      - title
+      - snippet
+      - source
+      - observed_at
+      - person
+      properties:
+        url:
+          type: string
+          format: uri
+        title:
+          type: string
+        snippet:
+          type:
+          - string
+          - 'null'
+        source:
+          type: string
+        observed_at:
+          type: string
+          format: date-time
+        person:
+          type: object
+          additionalProperties: false
+          required:
+          - name
+          - title
+          - company
+          - location
+          - linkedin_url
+          - identity_verified
+          - resolution_source
+          properties:
+            name:
+              type: string
+            title:
+              type:
+              - string
+              - 'null'
+            company:
+              type:
+              - string
+              - 'null'
+            location:
+              type:
+              - string
+              - 'null'
+            linkedin_url:
+              type:
+              - string
+              - 'null'
+            identity_verified:
+              type: boolean
+              const: false
+            resolution_source:
+              type: string
+              const: public_web
+    PublicApiError:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          - request_id
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            request_id:
+              type: string
+            http_status:
+              type: integer
+              minimum: 400
+              maximum: 599
+              description: Semantic status when an error terminates a response after streaming headers opened.
+            retryable:
+              type: boolean
+            unavailable_fields:
+              type: array
+              items:
+                type: string
+                enum:
+                - work_email
+                - personal_email
+                - phone
+                - profile
+                - email
+              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
+            usage:
+              type: object
+              additionalProperties: false
+              required:
+              - acu_used
+              - billed
+              - free
+              - not_found
+              properties:
+                acu_used:
+                  type: number
+                  minimum: 0
+                acu_remaining:
+                  type: number
+                  minimum: 0
+                acu_value_usd:
+                  type: number
+                  const: 0.1
+                billed:
+                  type: array
+                  items:
+                    type: string
+                free:
+                  type: array
+                  items:
+                    type: string
+                not_found:
+                  type: array
+                  items:
+                    type: string
+          additionalProperties: true
     SyncSearchResult:
       type: object
       additionalProperties: false
@@ -727,118 +775,6 @@ components:
                       type: string
                     quote:
                       type: string
-    SyncSearchRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        query:
-          type: string
-          maxLength: 4000
-          default: ''
-          description: Optional semantic query. Supply this, at least one structured filter, or both.
-        type:
-          type: string
-          enum:
-          - instant
-          - fast
-          - auto
-          - deep
-          default: auto
-          description: instant and fast return indexed candidates. auto and deep require evidence-backed matches to the complete query and filters; deep also always runs public-web grounding. Verification may return fewer results within its deadline; Sets supports durable research for larger requests.
-        category:
-          type: string
-          enum:
-          - people
-          default: people
-        num_results:
-          type: integer
-          minimum: 1
-          maximum: 5000
-          default: 10
-          description: Up to 150 return inline. Larger requests run as a background People Set (self-serve up to 500).
-        criteria:
-          type: array
-          maxItems: 5
-          default: []
-          items:
-            type: string
-            minLength: 1
-            maxLength: 500
-          description: Plain-English conditions every result must satisfy, such as 'Has founded a venture-backed company'. Each is researched and judged separately; results carry one verification entry per criterion and are ranked by evidence strength across all of them. Requires type auto or deep. In async searches they replace the criteria derived from the query.
-        async:
-          type: boolean
-          description: Run as a background People Set and return 202 with set_id. Defaults to true above 150 results; false with a larger num_results is rejected. Async searches always verify each row, so type and contents do not apply.
-        webhook_url:
-          type: string
-          format: uri
-          description: Async searches only. Receives the Set's progress events.
-        filters:
-          type: object
-          additionalProperties: false
-          default: {}
-          properties:
-            title:
-              type: string
-              minLength: 1
-              maxLength: 200
-            seniority:
-              type: string
-              minLength: 1
-              maxLength: 80
-            company:
-              type: string
-              minLength: 1
-              maxLength: 200
-            industry:
-              type: string
-              minLength: 1
-              maxLength: 200
-            location:
-              type: string
-              minLength: 1
-              maxLength: 200
-        contents:
-          type: object
-          additionalProperties: false
-          default: {}
-          properties:
-            fields:
-              type: array
-              default:
-              - linkedin
-              - title
-              - company
-              - location
-              items:
-                type: string
-                enum:
-                - linkedin
-                - title
-                - company
-                - location
-                - name
-      anyOf:
-      - required:
-        - query
-        properties:
-          query:
-            type: string
-            minLength: 1
-      - required:
-        - filters
-        properties:
-          filters:
-            anyOf:
-            - required:
-              - title
-            - required:
-              - seniority
-            - required:
-              - company
-            - required:
-              - industry
-            - required:
-              - location
     SearchHandoffResponse:
       type: object
       additionalProperties: false
@@ -916,6 +852,66 @@ components:
                     type: string
         meta:
           $ref: '#/components/schemas/PublicCreditsResponseMeta'
+    ResolveRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 200
+          description: Full name; a partial or misspelled surname is tolerated.
+        company:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Company name or web domain, such as Acme or acme.com.
+        role:
+          type: string
+          minLength: 1
+          maxLength: 300
+          description: Job title or role.
+        location:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: City, region, or country.
+        address:
+          type: string
+          minLength: 3
+          maxLength: 300
+          description: Street or mailing address; it only has to fit the person's area.
+        work_email:
+          type: string
+          format: email
+          maxLength: 254
+          description: Work email. Its domain identifies the employer unless it is a free mailbox provider.
+        personal_email:
+          type: string
+          format: email
+          maxLength: 254
+        phone:
+          type: string
+          maxLength: 40
+          pattern: ^\+?[\d\s().-]+$
+          description: Phone number with 7 to 15 digits, in any common format.
+      anyOf:
+      - required:
+        - company
+      - required:
+        - role
+      - required:
+        - location
+      - required:
+        - address
+      - required:
+        - work_email
+      - required:
+        - personal_email
+      - required:
+        - phone
   securitySchemes:
     bearerAuth:
       type: http
@@ -924,6 +920,3 @@ components:
       type: apiKey
       in: header
       name: x-api-key
-x-refined-from:
-- ploid-openapi.json
-- ploid-openapi.yml

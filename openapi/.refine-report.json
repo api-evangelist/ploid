@@ -1,8 +1,7 @@
 {
   "provider": "ploid",
   "sources": [
-    "_original/ploid-openapi.json",
-    "ploid-openapi.yml"
+    "_original/ploid-openapi.json"
   ],
   "outputs": [
     "ploid-account-api-openapi.yml",
@@ -16,11 +15,12 @@
     "ploid-social-api-openapi.yml"
   ],
   "archived": [
-    "archived openapi/ploid-openapi.yml"
+    "deleted 1 superseded output(s) from the previous generation"
   ],
   "errors": [],
   "warnings": [],
   "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "ploid-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "ploid-openapi.json: declared missing tag: Account",
@@ -32,26 +32,19 @@
     "ploid-openapi.json: declared missing tag: People",
     "ploid-openapi.json: declared missing tag: Search",
     "ploid-openapi.json: declared missing tag: Social",
-    "ploid-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "ploid-openapi.yml: declared missing tag: Account",
-    "ploid-openapi.yml: declared missing tag: Discovery",
-    "ploid-openapi.yml: declared missing tag: Enrichment",
-    "ploid-openapi.yml: declared missing tag: Harness",
-    "ploid-openapi.yml: declared missing tag: LinkedIn",
-    "ploid-openapi.yml: declared missing tag: Monitors",
-    "ploid-openapi.yml: declared missing tag: People",
-    "ploid-openapi.yml: declared missing tag: Search",
-    "ploid-openapi.yml: declared missing tag: Social",
-    "tag 'Account' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'Discovery' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'Enrichment' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'Harness' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'LinkedIn' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'Monitors' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'People' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'Search' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "tag 'Social' spans 2 source specs (ploid-openapi.json, ploid-openapi.yml): per-path servers applied",
-    "apis.yml register: written (+9 apis, 10 total)"
+    "superseded outputs removed: ploid-linked-in-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 10 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "_original/ploid-openapi.yml: archived document superseded by a larger archived document",
+    "ploid-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-discovery-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-enrichment-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-harness-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-linked-in-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-monitors-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-people-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-search-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "ploid-social-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

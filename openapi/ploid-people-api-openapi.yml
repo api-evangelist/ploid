@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Ploid People API
+  title: Ploid Public People API
   version: 2.0.0
-  description: 'Operations tagged People across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: Ploid's focused agent-native people API. Start with 50 ACU for 30 days after creating an account.
 servers:
 - url: https://api.ploid.com
 security:
@@ -90,8 +90,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
   /v1/person/runs/{id}:
     get:
       operationId: getPersonRun
@@ -215,117 +213,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
 components:
   schemas:
-    PublicApiError:
-      type: object
-      additionalProperties: false
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - code
-          - message
-          - request_id
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            request_id:
-              type: string
-            http_status:
-              type: integer
-              minimum: 400
-              maximum: 599
-              description: Semantic status when an error terminates a response after streaming headers opened.
-            retryable:
-              type: boolean
-            unavailable_fields:
-              type: array
-              items:
-                type: string
-                enum:
-                - work_email
-                - personal_email
-                - phone
-                - profile
-                - email
-              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
-            usage:
-              type: object
-              additionalProperties: false
-              required:
-              - acu_used
-              - billed
-              - free
-              - not_found
-              properties:
-                acu_used:
-                  type: number
-                  minimum: 0
-                acu_remaining:
-                  type: number
-                  minimum: 0
-                acu_value_usd:
-                  type: number
-                  const: 0.1
-                billed:
-                  type: array
-                  items:
-                    type: string
-                free:
-                  type: array
-                  items:
-                    type: string
-                not_found:
-                  type: array
-                  items:
-                    type: string
-          additionalProperties: true
-    PersonRequest:
-      type: object
-      properties:
-        identifier:
-          anyOf:
-          - type: object
-            properties:
-              person_id:
-                type: string
-                minLength: 1
-                maxLength: 500
-            required:
-            - person_id
-            additionalProperties: false
-          - type: object
-            properties:
-              linkedin_url:
-                type: string
-                format: uri
-            required:
-            - linkedin_url
-            additionalProperties: false
-          - type: object
-            properties:
-              name:
-                type: string
-                minLength: 1
-                maxLength: 200
-              company_domain:
-                type: string
-                minLength: 3
-                maxLength: 253
-            required:
-            - name
-            - company_domain
-            additionalProperties: false
-      required:
-      - identifier
-      additionalProperties: false
     PersonRunResponse:
       type: object
       properties:
@@ -1030,6 +919,113 @@ components:
         - data
         - meta
         additionalProperties: false
+    PublicApiError:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          - request_id
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            request_id:
+              type: string
+            http_status:
+              type: integer
+              minimum: 400
+              maximum: 599
+              description: Semantic status when an error terminates a response after streaming headers opened.
+            retryable:
+              type: boolean
+            unavailable_fields:
+              type: array
+              items:
+                type: string
+                enum:
+                - work_email
+                - personal_email
+                - phone
+                - profile
+                - email
+              description: Requested enrichment fields that could not complete. Present when all requested fields are unavailable.
+            usage:
+              type: object
+              additionalProperties: false
+              required:
+              - acu_used
+              - billed
+              - free
+              - not_found
+              properties:
+                acu_used:
+                  type: number
+                  minimum: 0
+                acu_remaining:
+                  type: number
+                  minimum: 0
+                acu_value_usd:
+                  type: number
+                  const: 0.1
+                billed:
+                  type: array
+                  items:
+                    type: string
+                free:
+                  type: array
+                  items:
+                    type: string
+                not_found:
+                  type: array
+                  items:
+                    type: string
+          additionalProperties: true
+    PersonRequest:
+      type: object
+      properties:
+        identifier:
+          anyOf:
+          - type: object
+            properties:
+              person_id:
+                type: string
+                minLength: 1
+                maxLength: 500
+            required:
+            - person_id
+            additionalProperties: false
+          - type: object
+            properties:
+              linkedin_url:
+                type: string
+                format: uri
+            required:
+            - linkedin_url
+            additionalProperties: false
+          - type: object
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 200
+              company_domain:
+                type: string
+                minLength: 3
+                maxLength: 253
+            required:
+            - name
+            - company_domain
+            additionalProperties: false
+      required:
+      - identifier
+      additionalProperties: false
   securitySchemes:
     bearerAuth:
       type: http
@@ -1038,6 +1034,3 @@ components:
       type: apiKey
       in: header
       name: x-api-key
-x-refined-from:
-- ploid-openapi.json
-- ploid-openapi.yml

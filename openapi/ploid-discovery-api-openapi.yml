@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Ploid Discovery API
+  title: Ploid Public Discovery API
   version: 2.0.0
-  description: 'Operations tagged Discovery across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: Ploid's focused agent-native people API. Start with 50 ACU for 30 days after creating an account.
 servers:
 - url: https://api.ploid.com
 security:
@@ -27,8 +27,6 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
-    servers:
-    - url: https://api.ploid.com
 components:
   securitySchemes:
     bearerAuth:
@@ -38,6 +36,3 @@ components:
       type: apiKey
       in: header
       name: x-api-key
-x-refined-from:
-- ploid-openapi.json
-- ploid-openapi.yml

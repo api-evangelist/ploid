@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Ploid Social API
+  title: Ploid Public Social API
   version: 2.0.0
-  description: 'Operations tagged Social across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: Ploid's focused agent-native people API. Start with 50 ACU for 30 days after creating an account.
 servers:
 - url: https://api.ploid.com
 security:
@@ -96,10 +96,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PublicApiError'
-    servers:
-    - url: https://api.ploid.com
 components:
   schemas:
+    SocialsRequest:
+      type: object
+      required:
+      - platform
+      - identifier
+      additionalProperties: false
+      properties:
+        platform:
+          type: string
+          enum:
+          - linkedin
+          - x
+          - twitter
+          - instagram
+          - tiktok
+          - youtube
+          - github
+          - reddit
+          - facebook
+          description: Use x for new integrations; twitter remains a compatibility alias.
+        identifier:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Handle, vanity slug, or a profile URL belonging to the selected platform.
     PublicApiError:
       type: object
       additionalProperties: false
@@ -168,27 +191,6 @@ components:
                   items:
                     type: string
           additionalProperties: true
-    PublicCreditsResponseMeta:
-      type: object
-      additionalProperties: false
-      required:
-      - request_id
-      - credits_charged
-      properties:
-        request_id:
-          type: string
-        credits_charged:
-          type: number
-          minimum: 0
-        remaining_credits:
-          type: number
-          minimum: 0
-        cursor:
-          type:
-          - string
-          - 'null'
-        message:
-          type: string
     SocialsResponse:
       type: object
       additionalProperties: false
@@ -220,31 +222,27 @@ components:
               description: Public profile fields vary by platform. Internal routing metadata is removed.
         meta:
           $ref: '#/components/schemas/PublicCreditsResponseMeta'
-    SocialsRequest:
+    PublicCreditsResponseMeta:
       type: object
-      required:
-      - platform
-      - identifier
       additionalProperties: false
+      required:
+      - request_id
+      - credits_charged
       properties:
-        platform:
+        request_id:
           type: string
-          enum:
-          - linkedin
-          - x
-          - twitter
-          - instagram
-          - tiktok
-          - youtube
-          - github
-          - reddit
-          - facebook
-          description: Use x for new integrations; twitter remains a compatibility alias.
-        identifier:
+        credits_charged:
+          type: number
+          minimum: 0
+        remaining_credits:
+          type: number
+          minimum: 0
+        cursor:
+          type:
+          - string
+          - 'null'
+        message:
           type: string
-          minLength: 1
-          maxLength: 500
-          description: Handle, vanity slug, or a profile URL belonging to the selected platform.
   securitySchemes:
     bearerAuth:
       type: http
@@ -253,6 +251,3 @@ components:
       type: apiKey
       in: header
       name: x-api-key
-x-refined-from:
-- ploid-openapi.json
-- ploid-openapi.yml

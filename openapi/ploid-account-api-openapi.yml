@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Ploid Account API
+  title: Ploid Public Account API
   version: 2.0.0
-  description: 'Operations tagged Account across 2 of this provider''s published API definitions: ploid-openapi.json, ploid-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: Ploid's focused agent-native people API. Start with 50 ACU for 30 days after creating an account.
 servers:
 - url: https://api.ploid.com
 security:
@@ -58,8 +58,6 @@ paths:
               schema:
                 type: integer
                 minimum: 1
-    servers:
-    - url: https://api.ploid.com
   /v1/account/usage:
     get:
       operationId: getAccountUsage
@@ -107,8 +105,6 @@ paths:
               schema:
                 type: integer
                 minimum: 1
-    servers:
-    - url: https://api.ploid.com
   /v1/account/profile:
     get:
       operationId: getAccountProfile
@@ -214,8 +210,6 @@ paths:
               schema:
                 type: integer
                 minimum: 1
-    servers:
-    - url: https://api.ploid.com
   /v1/account/key:
     delete:
       operationId: revokeCurrentApiKey
@@ -263,10 +257,181 @@ paths:
               schema:
                 type: integer
                 minimum: 1
-    servers:
-    - url: https://api.ploid.com
 components:
   schemas:
+    ApiKeyBudgetState:
+      type: object
+      additionalProperties: false
+      required:
+      - daily_budget_cents
+      - monthly_budget_cents
+      - daily_used_cents
+      - monthly_used_cents
+      - daily_remaining_cents
+      - monthly_remaining_cents
+      - daily_reset_at
+      - monthly_reset_at
+      properties:
+        daily_budget_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        monthly_budget_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        daily_used_cents:
+          type: integer
+          minimum: 0
+        monthly_used_cents:
+          type: integer
+          minimum: 0
+        daily_remaining_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        monthly_remaining_cents:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        daily_reset_at:
+          type: string
+          format: date-time
+        monthly_reset_at:
+          type: string
+          format: date-time
+    AccountProfileResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/AccountProfile'
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
+    AccountCreditsResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - plan
+          - acu
+          - acu_value_usd
+          - api_key_budget
+          properties:
+            plan:
+              type: string
+              enum:
+              - FREE
+              - PAYG
+              - API_PRO
+              - STARTER
+              - PRO
+              - SCALE
+              - TEAMS
+            acu:
+              $ref: '#/components/schemas/AccountAcuSummary'
+            acu_value_usd:
+              type: number
+              const: 0.1
+            api_key_budget:
+              $ref: '#/components/schemas/ApiKeyBudgetState'
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
+    PublicResponseMeta:
+      type: object
+      additionalProperties: false
+      required:
+      - request_id
+      properties:
+        request_id:
+          type: string
+    AccountKeyRevocationResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - id
+          - revoked
+          properties:
+            id:
+              type: string
+            revoked:
+              type: boolean
+              const: true
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
+    AccountAcuSummary:
+      type: object
+      additionalProperties: false
+      required:
+      - included
+      - purchased
+      - used
+      - available
+      - overage
+      properties:
+        included:
+          type: number
+        purchased:
+          type: number
+        used:
+          type: number
+        available:
+          type: number
+        overage:
+          type: number
+    AccountUsageResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - credits
+          - api_key
+          properties:
+            credits:
+              $ref: '#/components/schemas/AccountCreditSummary'
+            api_key:
+              type: object
+              additionalProperties: false
+              required:
+              - id
+              - active_keys
+              - budget
+              properties:
+                id:
+                  type: string
+                active_keys:
+                  type: integer
+                  minimum: 1
+                budget:
+                  $ref: '#/components/schemas/ApiKeyBudgetState'
+        meta:
+          $ref: '#/components/schemas/PublicResponseMeta'
     PublicApiError:
       type: object
       additionalProperties: false
@@ -335,59 +500,43 @@ components:
                   items:
                     type: string
           additionalProperties: true
-    PublicResponseMeta:
+    AccountProfileUpdate:
       type: object
       additionalProperties: false
       required:
-      - request_id
+      - first_name
+      - last_name
+      - image_url
+      - linkedin_url
+      - twitter_url
+      - github_url
       properties:
-        request_id:
+        first_name:
           type: string
-    ApiKeyBudgetState:
-      type: object
-      additionalProperties: false
-      required:
-      - daily_budget_cents
-      - monthly_budget_cents
-      - daily_used_cents
-      - monthly_used_cents
-      - daily_remaining_cents
-      - monthly_remaining_cents
-      - daily_reset_at
-      - monthly_reset_at
-      properties:
-        daily_budget_cents:
-          type:
-          - integer
-          - 'null'
-          minimum: 0
-        monthly_budget_cents:
-          type:
-          - integer
-          - 'null'
-          minimum: 0
-        daily_used_cents:
-          type: integer
-          minimum: 0
-        monthly_used_cents:
-          type: integer
-          minimum: 0
-        daily_remaining_cents:
-          type:
-          - integer
-          - 'null'
-          minimum: 0
-        monthly_remaining_cents:
-          type:
-          - integer
-          - 'null'
-          minimum: 0
-        daily_reset_at:
+          minLength: 1
+          maxLength: 80
+        last_name:
           type: string
-          format: date-time
-        monthly_reset_at:
-          type: string
-          format: date-time
+          maxLength: 80
+        image_url:
+          type:
+          - string
+          - 'null'
+        linkedin_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        twitter_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        github_url:
+          type:
+          - string
+          - 'null'
+          format: uri
     AccountCreditSummary:
       type: object
       additionalProperties: false
@@ -412,93 +561,6 @@ components:
           type: number
           const: 0.1
           description: Fixed USD value of one ACU.
-    AccountAcuSummary:
-      type: object
-      additionalProperties: false
-      required:
-      - included
-      - purchased
-      - used
-      - available
-      - overage
-      properties:
-        included:
-          type: number
-        purchased:
-          type: number
-        used:
-          type: number
-        available:
-          type: number
-        overage:
-          type: number
-    AccountKeyRevocationResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          type: object
-          additionalProperties: false
-          required:
-          - id
-          - revoked
-          properties:
-            id:
-              type: string
-            revoked:
-              type: boolean
-              const: true
-        meta:
-          $ref: '#/components/schemas/PublicResponseMeta'
-    AccountProfileResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          $ref: '#/components/schemas/AccountProfile'
-        meta:
-          $ref: '#/components/schemas/PublicResponseMeta'
-    AccountCreditsResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          type: object
-          additionalProperties: false
-          required:
-          - plan
-          - acu
-          - acu_value_usd
-          - api_key_budget
-          properties:
-            plan:
-              type: string
-              enum:
-              - FREE
-              - PAYG
-              - API_PRO
-              - STARTER
-              - PRO
-              - SCALE
-              - TEAMS
-            acu:
-              $ref: '#/components/schemas/AccountAcuSummary'
-            acu_value_usd:
-              type: number
-              const: 0.1
-            api_key_budget:
-              $ref: '#/components/schemas/ApiKeyBudgetState'
-        meta:
-          $ref: '#/components/schemas/PublicResponseMeta'
     AccountProfile:
       type: object
       additionalProperties: false
@@ -539,76 +601,6 @@ components:
           - string
           - 'null'
           format: uri
-    AccountProfileUpdate:
-      type: object
-      additionalProperties: false
-      required:
-      - first_name
-      - last_name
-      - image_url
-      - linkedin_url
-      - twitter_url
-      - github_url
-      properties:
-        first_name:
-          type: string
-          minLength: 1
-          maxLength: 80
-        last_name:
-          type: string
-          maxLength: 80
-        image_url:
-          type:
-          - string
-          - 'null'
-        linkedin_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        twitter_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        github_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-    AccountUsageResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          type: object
-          additionalProperties: false
-          required:
-          - credits
-          - api_key
-          properties:
-            credits:
-              $ref: '#/components/schemas/AccountCreditSummary'
-            api_key:
-              type: object
-              additionalProperties: false
-              required:
-              - id
-              - active_keys
-              - budget
-              properties:
-                id:
-                  type: string
-                active_keys:
-                  type: integer
-                  minimum: 1
-                budget:
-                  $ref: '#/components/schemas/ApiKeyBudgetState'
-        meta:
-          $ref: '#/components/schemas/PublicResponseMeta'
   securitySchemes:
     bearerAuth:
       type: http
@@ -617,6 +609,3 @@ components:
       type: apiKey
       in: header
       name: x-api-key
-x-refined-from:
-- ploid-openapi.json
-- ploid-openapi.yml
