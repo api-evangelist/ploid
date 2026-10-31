@@ -64,5 +64,168 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Ploid is a company surfaced via the API Evangelist harvest backlog (source: monid-connectors) and added to the network as a stub for full-pipeline profiling.
-- https://ploid.com
+Ploid is an applied AI lab building a people search and intelligence platform: a living index of more than two billion people available through a web app, a REST API, a CLI, and a hosted MCP server. The Ploid Public API (OpenAPI 3.1, 31 operations on api.ploid.com) covers synchronous people search, person resolution and evidence-backed person research runs, contact and social enrichment, public LinkedIn reads, monitors, and account usage and credit budgets, metered in ACU credits.
+
+**Areas:** Company · People Data · People Search · Contact Enrichment · Sales Intelligence · Recruiting · LinkedIn · MCP · Agents · Data Enrichment
+
+## Ploid on APIs.io
+
+Everything profiled for Ploid is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/ploid/](https://apis.io/providers/ploid/)** — or go straight to one of the APIs or properties below.
+
+### APIs (10)
+
+- [Ploid MCP Server](https://apis.io/apis/ploid/ploid-mcp-server/) — Ploid's hosted Streamable HTTP MCP server at https://api.ploid.com/mcp, protected by OAuth 2.1 (RFC 9728 protected-resource metadata, dynamic client…
+- [Ploid Account API](https://apis.io/apis/ploid/ploid-account-api/) — The Account API from Ploid — 4 operation(s) for account.
+- [Ploid Discovery API](https://apis.io/apis/ploid/ploid-discovery-api/) — The Discovery API from Ploid — 1 operation(s) for discovery.
+- [Ploid Enrichment API](https://apis.io/apis/ploid/ploid-enrichment-api/) — The Enrichment API from Ploid — 1 operation(s) for enrichment.
+- [Ploid Harness API](https://apis.io/apis/ploid/ploid-harness-api/) — The Harness API from Ploid — 2 operation(s) for harness.
+- [Ploid Monitors API](https://apis.io/apis/ploid/ploid-monitors-api/) — The Monitors API from Ploid — 7 operation(s) for monitors.
+- [Ploid People API](https://apis.io/apis/ploid/ploid-people-api/) — The People API from Ploid — 2 operation(s) for people.
+- [Ploid Search API](https://apis.io/apis/ploid/ploid-search-api/) — The Search API from Ploid — 2 operation(s) for search.
+- [Ploid Social API](https://apis.io/apis/ploid/ploid-social-api/) — The Social API from Ploid — 1 operation(s) for social.
+- [Ploid Linked In API](https://apis.io/apis/ploid/ploid-linked-in-api/) — The Linked In API from Ploid — 6 operation(s) for linked in.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Ploid Webhooks](https://apis.io/asyncapis/ploid/ploid-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Ploid](https://apis.io/servers/ploid/ploid/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Ploid Agentic Access](https://apis.io/agentic-access/ploid/ploid-agentic-access/)
+
+#### JSON Schema (6)
+
+The data models the API reads and writes.
+
+- [HarnessChatCompletionRequest](https://apis.io/schemas/ploid/ploid-harness-chat-completion-request/)
+- [PersonResponse](https://apis.io/schemas/ploid/ploid-person-response/)
+- [ResolveResponse](https://apis.io/schemas/ploid/ploid-resolve-response/)
+- [SearchHandoffResponse](https://apis.io/schemas/ploid/ploid-search-handoff-response/)
+- [SyncSearchRequest](https://apis.io/schemas/ploid/ploid-sync-search-request/)
+- [SyncSearchResponse](https://apis.io/schemas/ploid/ploid-sync-search-response/)
+
+#### JSON-LD (1)
+
+Linked-data contexts for the provider's vocabulary.
+
+- [Ploid Context](https://apis.io/jsonld/ploid/ploid-context/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Ploid Openapi Overlay](https://apis.io/overlays/ploid/ploid-openapi-overlay/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [Ploid API Rules](https://apis.io/rules/ploid/ploid-rules/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Ploid Authentication](https://apis.io/security/ploid/ploid-authentication/)
+- [Ploid Domain Security](https://apis.io/security/ploid/ploid-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Ploid Scopes](https://apis.io/scopes/ploid/ploid-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Ploid Plans Pricing](https://apis.io/plans/ploid/ploid-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Ploid Rate Limits](https://apis.io/rate-limits/ploid/ploid-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://ploid.com)
+- [Documentation](https://ploid.com/documentation)
+- [Getting started](https://ploid.com/documentation/getting-started)
+- [API reference](https://ploid.com/documentation/api)
+- [Pricing](https://ploid.com/pricing)
+- [Sign up](https://app.ploid.com/login?mode=signup)
+- [Terms of service](https://ploid.com/terms)
+- [Privacy policy](https://ploid.com/privacy)
+- [GitHub](https://github.com/ploidcom)
+
+## API Evangelist rating
+
+**Kin Score 65.2** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 70.7 |
+| Contract governance | 35.6 |
+| Operational transparency | 44.7 |
+| Developer ergonomics | 56.5 |
+| Access clarity | 76.3 |
+
+**Agent readiness 60.9** — agent-native
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | verified |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | verified |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | verified |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 42.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/ploid/](https://apis.io/providers/ploid/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Ploid: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/ploid/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
